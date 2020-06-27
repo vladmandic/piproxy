@@ -28,6 +28,8 @@ function get(addr) {
   const loc = { ip };
   // if database not initialized, return just ip
   if (!geoCity || !geoASN) return loc;
+  // skip for lan
+  if (ip.startsWith('127.') || ip.startsWith('10.') || ip.startsWith('192.') || ip.startsWith('169.')) return loc;
   // try normal lookup
   try {
     const geo = geoCity.get(ip);
