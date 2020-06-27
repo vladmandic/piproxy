@@ -1,9 +1,11 @@
 const path = require('path');
 const crypto = require('crypto');
+const useragent = require('useragent');
 const log = require('pilogger');
 const acme = require('piacme');
 const redbird = require('redbird');
 const noip = require('./noip.js');
+const geoip = require('./geoip.js');
 const changelog = require('./changelog.js');
 const node = require('../package.json');
 // eslint-disable-next-line node/no-unpublished-require
@@ -28,13 +30,6 @@ global.config = {
   },
 };
 
-function logger(entry) {
-  if (entry) log.data('Proxy', entry.level, entry.msg);
-}
-logger.prototype.write = function write(entry) {
-  if (entry) log.data('Proxy', entry.level, entry.msg);
-};
-
 global.options = {
   port: 80,
   secure: true,
@@ -56,6 +51,17 @@ global.redirects = [
   // { source: 'pigallery.ddns.net', target: 'https://127.0.0.1:10011' },
 ];
 
+function logger(res, req) {
+  const peer = req.socket._peername;
+  const head = req.headers;
+  const agent = useragent.lookup(head['user-agent']);
+  const agentDetails = `OS:'${agent.os.family}' Device:'${agent.device.family}' Agent:'${agent.family}.${agent.major}.${agent.minor}'`;
+  const geo = geoip.get(peer.address);
+  const geoDetails = geo.country ? `Geo:'${geo.country}/${geo.city}' ASN:'${geo.asn}' Loc:${geo.lat},${geo.lon}` : '';
+  // const size = res.headers['content-length'] || 0;
+  log.data(`${req.method}/${req.httpVersion} Code:${res.statusCode} ${head['x-forwarded-proto']}://${head.host}${req.url} From:${peer.family}${peer.address}:${peer.port} ${agentDetails} ${geoDetails}`);
+}
+
 async function main() {
   log.logFile(global.config.logFile);
   log.info(node.name, 'version', node.version);
@@ -68,14 +74,16 @@ async function main() {
   global.options.ssl.key = path.join(__dirname, ssl.Key);
   global.options.ssl.cert = path.join(__dirname, ssl.Crt);
   acme.monitorCert();
-  log.info('Proxy options', JSON.stringify(global.options));
+  await geoip.init();
 
+  // log.info('Proxy options', JSON.stringify(global.options));
   const proxy = redbird(global.options);
   proxy.notFound((req, res) => {
     res.statusCode = 404;
     res.write('Error: 404 Not found');
     res.end();
   });
+  proxy.proxy.on('proxyRes', logger);
 
   for (const entry of global.redirects) {
     log.state(`Redirecting ${entry.source} to ${entry.target}`);

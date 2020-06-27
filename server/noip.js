@@ -2,8 +2,11 @@ const superagent = require('superagent');
 const log = require('pilogger');
 const node = require('../package.json');
 
+let hosts = [];
+
 function update(config) {
-  for (const hostname of config.host) {
+  if (config && config.host) hosts = config.host;
+  for (const hostname of hosts) {
     superagent
       .get('dynupdate.no-ip.com/nic/update')
       .set('User-Agent', `${node.name}/${node.version}`)
@@ -17,8 +20,8 @@ function update(config) {
       .catch((err) => {
         log.warn(`NoIP error: ${err}`);
       });
-    setTimeout(() => update(config), 3600 * 1000 * 2);
   }
+  setTimeout(update, 3600 * 1000 * 2);
 }
 
 exports.update = update;
