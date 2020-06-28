@@ -2,11 +2,11 @@ const superagent = require('superagent');
 const log = require('pilogger');
 const node = require('../package.json');
 
-let hosts = [];
+let config = { hosts: [] };
 
-function update(config) {
-  if (config && config.host) hosts = config.host;
-  for (const hostname of hosts) {
+function update(initial) {
+  if (initial && initial.host) config = initial;
+  for (const hostname of config.host) {
     superagent
       .get('dynupdate.no-ip.com/nic/update')
       .set('User-Agent', `${node.name}/${node.version}`)
