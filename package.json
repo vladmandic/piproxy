@@ -26,15 +26,15 @@
     "piacme": "git+https://github.com/vladmandic/piacme.git",
     "pilogger": "git+https://github.com/vladmandic/pilogger.git",
     "redbird": "^0.10.0",
-    "simple-git": "^2.10.0",
-    "superagent": "^5.2.2",
+    "simple-git": "^2.11.0",
+    "superagent": "^5.3.1",
     "useragent": "^2.3.0"
   },
   "devDependencies": {
     "eslint": "^7.3.1",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-html": "^6.0.2",
-    "eslint-plugin-import": "^2.21.2",
+    "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-json": "^2.1.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1"
