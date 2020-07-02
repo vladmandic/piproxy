@@ -37,7 +37,7 @@ global.options = {
   xfwd: true,
   // using my piacme module instead
   // letsencrypt: { path: path.join(__dirname, '/cert'), port: 9999, email: '', production: true },
-  ssl: { http2: false, port: 443, key: '', cert: '', redirect: true, secureOptions: crypto.constants.SSL_OP_NO_TLSv1 },
+  ssl: { http2: false, port: 443, redirectPort: 443, key: '', cert: '', redirect: true, secureOptions: crypto.constants.SSL_OP_NO_TLSv1 },
 };
 
 global.redirects = [
@@ -59,7 +59,7 @@ function logger(res, req) {
   const geo = geoip.get(peer.address);
   const geoDetails = geo.country ? `Geo:'${geo.country}/${geo.city}' ASN:'${geo.asn}' Loc:${geo.lat},${geo.lon}` : '';
   // const size = res.headers['content-length'] || 0;
-  log.data(`${req.method}/${req.httpVersion} Code:${res.statusCode} ${head['x-forwarded-proto']}://${head.host}${req.url} From:${peer.family}${peer.address}:${peer.port} ${agentDetails} ${geoDetails}`);
+  log.data(`${req.method}/${req.socket.alpnProtocol || req.httpVersion} Code:${res.statusCode} ${head['x-forwarded-proto']}://${head.host}${req.url} From:${peer.family}${peer.address}:${peer.port} ${agentDetails} ${geoDetails}`);
 }
 
 async function main() {
@@ -83,6 +83,7 @@ async function main() {
     res.write('Error: 404 Not found');
     res.end();
   });
+  // proxy.proxy.on('proxyReq', logger);
   proxy.proxy.on('proxyRes', logger);
 
   for (const entry of global.redirects) {

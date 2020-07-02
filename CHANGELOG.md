@@ -1,6 +1,10 @@
 # PiProxy Change Log
 
-### **origin/HEAD** 2020/06/28 cyan00@gmail.com
+### **origin/HEAD** 2020/07/02 cyan00@gmail.com
+
+- updated packages
+
+### **v0.0.3** 2020/06/28 cyan00@gmail.com
 
 - noip refresh bugfix
 - deleted logs
