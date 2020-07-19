@@ -2,3 +2,4 @@ node_modules
 piproxy.log
 cert/**
 geoip/**
+setup.json

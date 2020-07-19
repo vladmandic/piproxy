@@ -2,6 +2,9 @@
 
 ### **origin/HEAD** 2020/07/02 cyan00@gmail.com
 
+
+### **v0.0.4** 2020/07/02 cyan00@gmail.com
+
 - updated packages
 
 ### **v0.0.3** 2020/06/28 cyan00@gmail.com
