@@ -1,7 +1,11 @@
 # PiProxy Change Log
 
-### **origin/HEAD** 2020/07/02 cyan00@gmail.com
+### **origin/HEAD** 2020/07/19 cyan00@gmail.com
 
+
+### **v0.0.5** 2020/07/19 cyan00@gmail.com
+
+- http2 logging
 
 ### **v0.0.4** 2020/07/02 cyan00@gmail.com
 

@@ -35,7 +35,7 @@ async function dependencyCheck() {
     ignoreBinPackage: false, // ignore the packages with bin entry
     skipMissing: false, // skip calculation of missing dependencies
     ignoreDirs: [],
-    ignoreMatches: ['eslint-plugin-*'],
+    ignoreMatches: ['htmlhint', 'minify', 'chart.js', 'eslint-plugin-*'],
     // parsers: { '*.js': depcheck.parser.es6 },
     detectors: [depcheck.detector.requireCallExpression, depcheck.detector.importDeclaration],
     specials: [depcheck.special.eslint],
@@ -83,10 +83,10 @@ async function main() {
   npm.installOpt = await exec('npm install --only=opt --json', 'NPM install optional modules');
 
   // ncu upgrade
-  process.stdout.write('NCU force upgrade modules\n');
+  process.stdout.write('Skipping NCU force upgrade modules\n');
   // eslint-disable-next-line node/no-unpublished-require
-  const ncu = require('npm-check-updates'); // eariliest we can load it
-  npm.ncu = await ncu.run({ jsonUpgraded: true, upgrade: true, packageManager: 'npm', silent: true });
+  // const ncu = require('npm-check-updates'); // eariliest we can load it
+  // npm.ncu = await ncu.run({ jsonUpgraded: true, upgrade: true, packageManager: 'npm', silent: true });
 
   // npm optimize
   npm.update = await exec('npm update --depth=5 --json', 'NPM update modules');
@@ -111,7 +111,10 @@ async function main() {
   // npm.cache = await exec('npm cache verify', 'NPM verify cache');
 
   process.stdout.write('Results written to setup.json\n');
-  fs.appendFileSync(f, JSON.stringify(npm, null, 2));
+  let old = [];
+  if (fs.existsSync(f)) old = JSON.parse(fs.readFileSync(f));
+  old.push(npm);
+  fs.writeFileSync(f, JSON.stringify(npm, null, 2));
 }
 
 main();

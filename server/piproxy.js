@@ -4,6 +4,7 @@ const useragent = require('useragent');
 const log = require('pilogger');
 const acme = require('piacme');
 const redbird = require('redbird');
+const http = require('http');
 const noip = require('./noip.js');
 const geoip = require('./geoip.js');
 const changelog = require('./changelog.js');
@@ -31,13 +32,24 @@ global.config = {
 };
 
 global.options = {
-  port: 80,
+  redirect: true,
+  // port: 80, // disable proxy on port 80 and use redirect http -> https instead
   secure: true,
   bunyan: false,
   xfwd: true,
+  ssl: {
+    http2: false,
+    port: 443,
+    redirectPort: 443,
+    key: '',
+    cert: '',
+    redirect: true,
+    secureOptions: crypto.constants.SSL_OP_NO_TLSv1,
+    allowHTTP1: true,
+    // serverModule: http2,
+  },
   // using my piacme module instead
   // letsencrypt: { path: path.join(__dirname, '/cert'), port: 9999, email: '', production: true },
-  ssl: { http2: false, port: 443, redirectPort: 443, key: '', cert: '', redirect: true, secureOptions: crypto.constants.SSL_OP_NO_TLSv1 },
 };
 
 global.redirects = [
@@ -52,14 +64,25 @@ global.redirects = [
 ];
 
 function logger(res, req) {
-  const peer = req.socket._peername;
+  const ip = req.socket.remoteAddress;
   const head = req.headers;
   const agent = useragent.lookup(head['user-agent']);
   const agentDetails = `OS:'${agent.os.family}' Device:'${agent.device.family}' Agent:'${agent.family}.${agent.major}.${agent.minor}'`;
-  const geo = geoip.get(peer.address);
+  const peer = req.socket._peername || {};
+  const geo = peer.address ? geoip.get(peer.address) : {};
   const geoDetails = geo.country ? `Geo:'${geo.country}/${geo.city}' ASN:'${geo.asn}' Loc:${geo.lat},${geo.lon}` : '';
-  // const size = res.headers['content-length'] || 0;
-  log.data(`${req.method}/${req.socket.alpnProtocol || req.httpVersion} Code:${res.statusCode} ${head['x-forwarded-proto']}://${head.host}${req.url} From:${peer.family}${peer.address}:${peer.port} ${agentDetails} ${geoDetails}`);
+  const size = head['content-length'] || head['content-size'] || 0;
+  log.data(`${req.method}/${req.socket.alpnProtocol || req.httpVersion} Code:${res.statusCode} ${head['x-forwarded-proto'] || 'http'}://${head.host}${req.url} From:${peer.family}${peer.address || ip}:${peer.port} Size:${size} ${agentDetails} ${geoDetails}`);
+}
+
+function redirect() {
+  if (!global.options.redirect) return;
+  const server = http.createServer((req, res) => {
+    res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
+    res.end();
+    logger(res, req);
+  });
+  server.listen(80);
 }
 
 async function main() {
@@ -85,6 +108,7 @@ async function main() {
   });
   // proxy.proxy.on('proxyReq', logger);
   proxy.proxy.on('proxyRes', logger);
+  redirect();
 
   for (const entry of global.redirects) {
     log.state(`Redirecting ${entry.source} to ${entry.target}`);
