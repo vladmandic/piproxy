@@ -1,5 +1,6 @@
 const maxmind = require('maxmind');
 const log = require('pilogger');
+const proc = require('process');
 
 let geoCity;
 let geoASN;
@@ -17,6 +18,7 @@ async function init() {
 function get(addr) {
   // fix ip address and allow ipv6
   let ip = '127.0.0.1';
+  if (!addr) addr = ip;
   if (addr.startsWith('::')) {
     const partial = addr.split(':');
     ip = partial[partial.length - 1];
@@ -34,15 +36,25 @@ function get(addr) {
   try {
     const geo = geoCity.get(ip);
     const asn = geoASN.get(ip);
-    loc.country = geo.country.iso_code;
-    loc.city = geo.city.names.en;
+    // if (!module.parent) console.log('Geo', geo, 'ASN', asn);
     loc.asn = asn.autonomous_system_organization;
-    loc.lat = geo.location.latitude;
-    loc.lon = geo.location.longitude;
-    loc.accuracy = geo.location.accuracy_radius;
+    loc.continent = geo.continent ? geo.continent.code : 'unknown';
+    loc.country = geo.country ? geo.country.iso_code : 'unknown';
+    loc.city = geo.city ? geo.city.names.en : 'unknown';
+    loc.lat = geo.location ? geo.location.latitude : 'unknown';
+    loc.lon = geo.location ? geo.location.longitude : 'unknown';
+    loc.accuracy = geo.location ? geo.location.accuracy_radius : 'unknown';
   } catch { /**/ }
   return loc;
 }
+
+async function test(ip) {
+  await init();
+  // eslint-disable-next-line no-console
+  console.log(ip, get(ip));
+}
+
+if (!module.parent) test(proc.argv[2]);
 
 exports.get = get;
 exports.init = init;

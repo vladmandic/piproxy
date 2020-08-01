@@ -1,5 +1,5 @@
 [Unit]
-Description=pidash
+Description=piproxy
 After=network.target network-online.target
 
 [Service]
@@ -11,6 +11,7 @@ StandardError=inherit
 Restart=always
 RestartSec=60
 User=vlado
+StandardOutput=null
 
 [Install]
 WantedBy=multi-user.target

@@ -111,9 +111,6 @@ async function main() {
   // npm.cache = await exec('npm cache verify', 'NPM verify cache');
 
   process.stdout.write('Results written to setup.json\n');
-  let old = [];
-  if (fs.existsSync(f)) old = JSON.parse(fs.readFileSync(f));
-  old.push(npm);
   fs.writeFileSync(f, JSON.stringify(npm, null, 2));
 }
 
