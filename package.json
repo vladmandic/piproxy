@@ -1,10 +1,11 @@
 {
   "name": "piproxy",
-  "version": "0.0.6",
+  "version": "1.0.1",
   "description": "PiProxy: NodeJS Web Proxy",
   "main": "server/piproxy.js",
   "scripts": {
-    "start": "node server/piproxy.js"
+    "start": "node server/piproxy.js",
+    "install": "./setup.js"
   },
   "repository": {
     "type": "git",
@@ -24,11 +25,11 @@
     "node": "14.0.0"
   },
   "dependencies": {
+    "http2-proxy": "^5.0.51",
     "maxmind": "^4.1.4",
     "moment": "^2.27.0",
     "piacme": "git+https://github.com/vladmandic/piacme.git",
     "pilogger": "git+https://github.com/vladmandic/pilogger.git",
-    "redbird": "^0.10.0",
     "simple-git": "^2.15.0",
     "superagent": "^5.3.1",
     "useragent": "^2.3.0"
@@ -36,7 +37,7 @@
   "devDependencies": {
     "auditjs": "^4.0.18",
     "depcheck": "^1.0.0",
-    "eslint": "^7.5.0",
+    "eslint": "^7.6.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-html": "^6.0.2",
     "eslint-plugin-import": "^2.22.0",
