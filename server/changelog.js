@@ -14,9 +14,9 @@ async function update(f) {
       let ver = entry.refs.split(' ');
       ver = ver[ver.length - 1];
       const date = moment(entry.date).format('YYYY/MM/DD');
-      if (ver !== 'master') text += `\n### **${ver}** ${date} ${entry.author_email}\n\n`;
+      if (ver !== 'master') text += `\n### **${ver}** ${date} ${entry.author_email}\n`;
     } else if (entry.message !== '') {
-      text += `- ${entry.message}\n`;
+      text += `\n- ${entry.message}\n`;
     }
   }
   const name = path.join(__dirname, '../', f);

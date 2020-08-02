@@ -1,5 +1,9 @@
 # PiProxy Change Log
 
+### **v1.0.2** 2020/08/02 cyan00@gmail.com
+
+- added helmet protection and rate limiter
+
 ### **origin/HEAD** 2020/08/01 cyan00@gmail.com
 
 
