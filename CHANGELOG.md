@@ -1,10 +1,11 @@
 # PiProxy Change Log
 
+### **origin/HEAD** 2020/08/01 cyan00@gmail.com
+
+
 ### **v1.0.1** 2020/08/01 cyan00@gmail.com
 
-
-### **origin/HEAD** 2020/07/29 cyan00@gmail.com
-
+- added secure server redirect
 
 ### **v0.0.6** 2020/07/29 cyan00@gmail.com
 

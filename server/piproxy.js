@@ -1,5 +1,6 @@
 const log = require('pilogger');
 const acme = require('piacme');
+const crypto = require('crypto');
 const noip = require('./noip.js');
 const geoip = require('./geoip.js');
 const changelog = require('./changelog.js');
@@ -28,6 +29,7 @@ global.config = {
   http2: {
     allowHTTP1: true, // allow http or just h2
     port: 443,
+    secureOptions: crypto.constants.SSL_OP_NO_TLSv1 | crypto.constants.SSL_OP_NO_TLSv1_1,
     // key: fs.readFileSync(global.config.acme.ServerKeyFile),
     // cert: fs.readFileSync(global.config.acme.fullChain),
   },
