@@ -1,5 +1,9 @@
 # PiProxy Change Log
 
+### **v1.0.3** 2020/08/02 cyan00@gmail.com
+
+- custom error handler
+
 ### **origin/HEAD** 2020/08/02 cyan00@gmail.com
 
 - updated
