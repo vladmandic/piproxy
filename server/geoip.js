@@ -50,8 +50,7 @@ function get(addr) {
 
 async function test(ip) {
   await init();
-  // eslint-disable-next-line no-console
-  console.log(ip, get(ip));
+  log.info(ip, get(ip));
 }
 
 if (!module.parent) test(proc.argv[2]);

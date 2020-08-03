@@ -35,8 +35,9 @@ global.config = {
   },
   redirectHTTP: true, // redirect http to https
   redirects: [
-    { url: 'pigallery.ddns.net', target: 'localhost', port: '10010' },
     { url: 'pidash.ddns.net', target: 'localhost', port: '10000' },
+    { url: 'pigallery.ddns.net', target: 'localhost', port: '10010' },
+    { url: 'pimiami.ddns.net', target: 'localhost', port: '10020' },
     { url: 'wyse', target: 'localhost', port: '10010' },
     { default: true, target: 'localhost', port: '10010' },
   ],

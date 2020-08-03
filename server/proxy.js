@@ -1,29 +1,22 @@
 const fs = require('fs');
 const path = require('path');
-const useragent = require('useragent');
 const http = require('http');
 const http2 = require('http2');
 const log = require('pilogger');
 const proxy = require('http2-proxy');
-const geoip = require('./geoip.js');
+const middleware = require('./middleware.js');
+const logger = require('./logger.js');
+const errors = require('./errors.js');
 
 let app;
 
-function errorHandler(err) {
-  if (err) log.error('Proxy error', err.code);
-}
-
-function logger(req, res) {
-  const head = req.headers;
-  const agent = useragent.lookup(head['user-agent']);
-  const agentDetails = `OS:'${agent.os.family}' Device:'${agent.device.family}' Agent:'${agent.family}.${agent.major}.${agent.minor}'`;
-  const peer = req.socket._peername || {};
-  const ip = peer.address || req.socket.remoteAddress;
-  const geo = ip ? geoip.get(ip) : {};
-  const geoDetails = geo.country ? `Geo:'${geo.continent}/${geo.country}/${geo.city}' ASN:'${geo.asn}' Loc:${geo.lat},${geo.lon}` : '';
-  const size = res.headers ? (res.headers['content-length'] || res.headers['content-size'] || 0) : 0;
-  const client = `${head[':scheme'] || (req.socket.encrypted ? 'https' : 'http')}://${head[':authority'] || req.headers.host}${req.url}`;
-  log.data(`${req.method}/${req.socket.alpnProtocol || req.httpVersion} Code:${res.statusCode} ${client} From:${ip} Size:${size} ${agentDetails} ${geoDetails}`);
+function errorHandler(err, req, res) {
+  if (err) {
+    log.error('Proxy error', err.statusCode, err.code, err.address, err.port);
+    res.setHeader('proxy-error', err);
+    if (err.statusCode) res.writeHead(err.statusCode, res.headers);
+    res.end();
+  }
 }
 
 function redirectSecure() {
@@ -50,50 +43,19 @@ function findTarget(req) {
     },
     onRes: (outReq, outRes, origRes) => { // add headers to response returning to client
       outRes.setHeader('x-powered-by', 'PiProxy');
-      outRes.writeHead(origRes.statusCode, origRes.headers);
-      origRes.pipe(outRes);
-      logger(outReq, origRes);
+      const obj = logger(outReq, origRes);
+      switch (origRes.statusCode) {
+        case 404:
+          outRes.write(errors.get404(obj));
+          outRes.end();
+          break;
+        default:
+          outRes.writeHead(origRes.statusCode, origRes.headers);
+          origRes.pipe(outRes);
+      }
     },
   };
   return res;
-}
-
-function startMiddleware() {
-  // Use connect as middleware enabler
-  // eslint-disable-next-line global-require
-  const connect = require('connect');
-  app = connect();
-
-  // Enable middleware
-
-  log.info('Enabling Helmet protection');
-  // eslint-disable-next-line global-require
-  const helmet = require('helmet');
-  app.use(helmet());
-
-  // eslint-disable-next-line global-require
-  const limiter = require('./limiter.js').limiter;
-  log.info('Enabling rate limiter:');
-  app.use(limiter);
-
-  /*
-  log.info('Enabling Brotli compression');
-  const shrink = require('shrink-ray-current');
-  app.use(shrink({ useZopfliForGzip: false, brotli: { quality: 4 } }));
-
-  log.info('Enabling rate limiter');
-  const rateLimit = require('express-rate-limit');
-  const limiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 50, // limit each IP to 100 requests per windowMs
-  });
-  app.use(limiter);
-  */
-
-  // Actual proxy calls
-  log.info('Activating reverse proxy');
-  // eslint-disable-next-line no-unused-vars
-  app.use((req, res, next) => proxy.web(req, res, findTarget(req), errorHandler));
 }
 
 function startServer(ssl) {
@@ -114,11 +76,16 @@ async function init(ssl) {
   redirectSecure();
 
   // Start proxy web server
-  startMiddleware();
+  app = await middleware.init();
   startServer(ssl);
 
-  // Log all redirect rules and start redirecting
-  for (const rule of global.config.redirects) log.info(' Rule:', JSON.stringify(rule));
+  // Log all redirect rules
+  for (const rule of global.config.redirects) log.info(' Rule:', rule);
+
+  // Actual proxy calls
+  log.info('Activating reverse proxy');
+  // eslint-disable-next-line no-unused-vars
+  app.use((req, res, next) => proxy.web(req, res, findTarget(req), errorHandler));
 }
 
 exports.init = init;
