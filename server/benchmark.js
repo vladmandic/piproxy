@@ -1,6 +1,4 @@
-const log = require('pilogger');
-// const superagent = require('superagent');
-// const https = require('https');
+const log = require('@vladmandic/pilogger');
 const http2 = require('http2');
 
 const options = {

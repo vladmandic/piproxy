@@ -115,36 +115,3 @@ async function main() {
 }
 
 main();
-
-/*
-#!/bin/bash
-echo updating javascripts
-mv scripts backup
-mkdir scripts
-cd scripts
-curl -L https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css >bootstrap.css
-curl -L https://cdn.jsdelivr.net/npm/chart.js@latest >chart.js
-curl -L http://hammerjs.github.io/dist/hammer.min.js >hammer.js
-curl -L https://code.jquery.com/jquery-3.5.0.min.js >jquery.js
-curl -L https://moment.github.io/luxon/global/luxon.min.js >luxon.js
-curl -L https://momentjs.com/downloads/moment.min.js >moment.js
-curl -L https://unpkg.com/@popperjs/core@latest >popper.js
-curl -L https://unpkg.com/superagent@latest >superagent.js
-curl -L https://omnipotent.net/jquery.sparkline/2.1.2/jquery.sparkline.min.js >sparkline.js
-curl -L https://unpkg.com/suncalc@latest >suncalc-full.js
-curl -L https://www.chartjs.org/chartjs-chart-financial/chartjs-chart-financial.js >chart-financial-full.js
-../node_modules/.bin/minify chart-financial-full.js >chart-financial.js
-rm chart-financial-full.js
-../node_modules/.bin/minify suncalc-full.js >suncalc.js
-rm suncalc-full.js
-curl -L https://raw.githubusercontent.com/maxdow/skycons/master/skycons.js >skycons-full.js
-../node_modules/.bin/minify skycons-full.js >skycons.js
-rm skycons-full.js
-cp ../backup/prism.js .
-cp ../backup/prism.css .
-cp ../backup/sorttable.js .
-cd ..
-
-# prism: dynamically generated js and css at
-# https://prismjs.com/download.html#themes=prism-tomorrow&languages=markup+css+clike+javascript+bash+css-extras+diff+json+json5+julia+markdown&plugins=line-numbers+inline-color
-*/

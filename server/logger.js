@@ -1,4 +1,4 @@
-const log = require('pilogger');
+const log = require('@vladmandic/pilogger');
 const useragent = require('useragent');
 const geoip = require('./geoip.js');
 

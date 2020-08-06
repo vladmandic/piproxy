@@ -1,13 +1,18 @@
-const log = require('pilogger');
-const acme = require('piacme');
+const fs = require('fs');
+const log = require('@vladmandic/pilogger');
+const acme = require('@vladmandic/piacme');
 const crypto = require('crypto');
 const noip = require('./noip.js');
 const geoip = require('./geoip.js');
 const changelog = require('./changelog.js');
 const proxy = require('./proxy.js');
 const node = require('../package.json');
-// eslint-disable-next-line node/no-unpublished-require
-const secrets = require('../cert/secrets.json'); // create private secrets file as required
+
+let secrets = {};
+if (fs.existsSync('./cert/secrets.json')) { // create private secrets file as required
+  const blob = fs.readFileSync('./cert/secrets.json');
+  secrets = JSON.parse(blob);
+}
 
 global.config = {
   logFile: 'piproxy.log',
@@ -26,12 +31,14 @@ global.config = {
     ServerKeyFile: './cert//private.pem',
     fullChain: './cert/fullchain.pem',
   },
+  ssl: {
+    Key: 'file-with-server-private-key',
+    Crt: 'file-with-server-certificate',
+  },
   http2: {
-    allowHTTP1: true, // allow http or just h2
+    allowHTTP1: true,
     port: 443,
     secureOptions: crypto.constants.SSL_OP_NO_TLSv1 | crypto.constants.SSL_OP_NO_TLSv1_1,
-    // key: fs.readFileSync(global.config.acme.ServerKeyFile),
-    // cert: fs.readFileSync(global.config.acme.fullChain),
   },
   redirectHTTP: true, // redirect http to https
   redirects: [
@@ -41,6 +48,15 @@ global.config = {
     { url: 'wyse', target: 'localhost', port: '10010' },
     { default: true, target: 'localhost', port: '10010' },
   ],
+  limiter: {
+    interval: 10,
+    tokens: 500,
+  },
+  enableHelmet: true,
+  geoIP: {
+    city: './geoip/GeoLite2-City.mmdb',
+    asn: './geoip/GeoLite2-ASN.mmdb',
+  },
 };
 
 async function main() {
@@ -53,8 +69,13 @@ async function main() {
   // update NoIP
   await noip.update(global.config.noip);
   // Check & Update SSL Certificate
-  await acme.init(global.config.acme);
-  const ssl = await acme.getCert();
+  let ssl = {};
+  if (global.config.acme && global.config.acme.application) {
+    await acme.init(global.config.acme);
+    ssl = await acme.getCert();
+  } else {
+    ssl = global.config.ssl;
+  }
   acme.monitorCert();
   // Load GeoIP DB
   await geoip.init();

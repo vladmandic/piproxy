@@ -1,10 +1,135 @@
 # PiProxy: NodeJS Web Proxy
 
-Features:
+## Features
 
-- Native HTTP2 support
+- Native HTTP2 support as front-end
+- Can proxy to HTTP2, HTTPS or HTTP destinations
 - ACME/LetsEncrypt support for automatic creation and renewal of SSL certificates
 - No-IP support for automatic dynamic IP updates
 - TLS version protection (TLS v1.2 and higher are allowed)
 - Helmet protection
 - Rate limiting
+- Custom error handling
+- GeoIP reverse lookups on access
+- Agent analysis on access
+
+## Run
+
+Simply install and run:
+
+- Make sure you have [NodeJS](https://nodejs.org/en/) already installed
+- Clone repository `git clone https://github.com/vladmandic/piproxy` or  
+  Download and unpack from <https://github.com/vladmandic/piproxy/releases/>
+- Install using `./setup.js`  
+  This will install all dependencies as needednpm start
+- Run using:  
+  `npm start` or use `piproxy.service` as a template to create a Linux service
+
+## Configuration
+
+Entire configuration is inside `server/piproxy.js` config object
+
+- **logFile**  
+  Proxy application and access log
+- **noip**  
+  If list of hosts exists, piproxy will update dynamic ip for those hosts with no-ip as needed
+- **acme**  
+  If object exists, piproxy will use piacme module for automatic key and certificate management
+- **ssl**
+  Used to manually specify server key and certificate if acme module is not used
+- **http2**  
+  Object passed to [http2.createSecureServer](https://nodejs.org/api/http2.html#http2_http2_createsecureserver_options_onrequesthandler)
+- **redirectHTTP**  
+  Should http://* requests be redirected to https://
+- **redirects**  
+  List of redirects using `url(source) -> target:port` mapping.  
+  Default object is used when there are no strict rule matches.
+- **limiter**
+  If present, piproxy will use token-bucket style of http request limiting.  
+  `tokens` is maximum number of requests a client can make within the `interval` seconds before server starts returning error 429.
+- **enableHelmet**  
+  Enables [Helmet](https://helmetjs.github.io/) and strict CSP protection.  
+  Disable or configure manually in `server/middleware.js` `options.helmet` object if you have access permission errors on your site because security is too strict.
+- **geoIP**  
+  If optional `city` and `asn` databases are present, proxy will attempt reverse GeoIP lookup on access
+
+### Example configuration
+
+      {
+        logFile: 'piproxy.log',
+        noip: {
+          host: ['pidash.ddns.net', 'pigallery.ddns.net', 'pimiami.ddns.net'],
+          user: 'username',
+          password: 'password,
+        },
+        acme: {
+          application: 'piproxy/1.0.0',
+          domains: ['pidash.ddns.net', 'pigallery.ddns.net', 'pimiami.ddns.net'],
+          maintainer: 'mandic00@live.com',
+          subscriber: 'mandic00@live.com',
+          accountFile: './cert/account.json',
+          accountKeyFile: './cert/account.pem',
+          ServerKeyFile: './cert//private.pem',
+          fullChain: './cert/fullchain.pem',
+        },
+          ssl: {
+            Key: './cert//private.pem',
+            Crt: './cert/fullchain.pem',
+        },
+        http2: {
+          allowHTTP1: true,
+          port: 443,
+          secureOptions: crypto.constants.SSL_OP_NO_TLSv1 | crypto.constants.SSL_OP_NO_TLSv1_1,
+        },
+        redirectHTTP: true, // redirect http to https
+        redirects: [
+          { url: 'example1.com', target: 'localhost', port: '10000' },
+          { url: 'example2.com', target: 'localhost', port: '10001' },
+          { default: true, target: 'localhost', port: '1002' },
+        ],
+        limiter: {
+          interval: 10,
+          tokens: 500,
+        },
+        enableHelmet: true,
+        geoIP: {
+          city: './geoip/GeoLite2-City.mmdb',
+          asn: './geoip/GeoLite2-ASN.mmdb',
+        },
+      };
+
+### Advanced usage
+
+For custom error handling, see `server/proxy.js:findTarget()` function which currently implements custom handler for error 404 (HTTP Not Found) by returning content of `server/error.js:get404()` instead of forwarding error as-is from a proxied server.  
+
+## Example log
+
+    2020-08-06 12:06:45 STATE:  Application log set to /home/vlado/dev/piproxy/piproxy.log
+    2020-08-06 12:06:45 INFO:  @vladmandic/piproxy version 1.0.4
+    2020-08-06 12:06:45 INFO:  Platform: linux Arch: x64 Node: v14.4.0
+    2020-08-06 12:06:45 INFO:  ACME certificate: check: ./cert/fullchain.pem
+    2020-08-06 12:06:45 STATE:  Change log updated: /home/vlado/dev/piproxy/CHANGELOG.md
+    2020-08-06 12:06:45 INFO:  SSL account: mailto:mandic00@live.com created: 2020-04-23 21:55:15
+    2020-08-06 12:06:45 INFO:  SSL keys server:RSA account:EC
+    2020-08-06 12:06:45 INFO:  SSL certificate subject:pidash.ddns.net issuer:Let's Encrypt Authority X3
+    2020-08-06 12:06:45 STATE:  SSL certificate expires in 47.3 days, skipping renewal
+    2020-08-06 12:06:45 STATE:  GeoIP databases loaded
+    2020-08-06 12:06:46 INFO:  Enabling rate limiter: { interval: 10, tokens: 500 }
+    2020-08-06 12:06:46 INFO:   Rule: { url: 'pidash.ddns.net', target: 'localhost', port: '10000' }
+    2020-08-06 12:06:46 INFO:   Rule: { url: 'pigallery.ddns.net', target: 'localhost', port: '10010' }
+    2020-08-06 12:06:46 INFO:   Rule: { url: 'pimiami.ddns.net', target: 'localhost', port: '10020' }
+    2020-08-06 12:06:46 INFO:   Rule: { url: 'wyse', target: 'localhost', port: '10010' }
+    2020-08-06 12:06:46 INFO:   Rule: { default: true, target: 'localhost', port: '10010' }
+    2020-08-06 12:06:46 INFO:  Activating reverse proxy
+    2020-08-06 12:06:46 STATE:  Proxy listening: { address: '::', family: 'IPv6', port: 443 }
+    2020-08-06 12:06:47 STATE:  NoIP {"hostname":"pigallery.ddns.net","status":200,"text":"nochg 138.207.150.136"}
+    2020-08-06 12:06:47 STATE:  NoIP {"hostname":"pidash.ddns.net","status":200,"text":"nochg 138.207.150.136"}
+    2020-08-06 12:06:47 STATE:  NoIP {"hostname":"pimiami.ddns.net","status":200,"text":"nochg 138.207.150.136"}
+    ...
+    2020-08-06 12:09:22 DATA:  GET/h2 Code:200 https://pigallery.ddns.net/ From:::ffff:172.58.11.104 Size:0 OS:'Android' Device:'Samsung' Agent:'Chrome Mobile.77.0' Geo:'NA/US/Miami' ASN:'T-Mobile USA, Inc.' Loc:25.8119,-80.2318
+    2020-08-06 12:09:23 DATA:  GET/h2 Code:200 https://pigallery.ddns.net/dist/gallery.js From:::ffff:172.58.11.104 Size:0 OS:'Android' Device:'Samsung' Agent:'Chrome Mobile.77.0' Geo:'NA/US/Miami' ASN:'T-Mobile USA, Inc.' Loc:25.8119,-80.2318
+    2020-08-06 12:09:24 DATA:  GET/h2 Code:401 https://pigallery.ddns.net/api/user From:::ffff:172.58.11.104 Size:0 OS:'Android' Device:'Samsung' Agent:'Chrome Mobile.77.0' Geo:'NA/US/Miami' ASN:'T-Mobile USA, Inc.' Loc:25.8119,-80.2318
+    2020-08-06 12:09:24 DATA:  GET/h2 Code:404 https://pigallery.ddns.net/missing From:::ffff:172.58.11.104 Size:151 OS:'Android' Device:'Samsung' Agent:'Chrome Mobile.77.0' Geo:'NA/US/Miami' ASN:'T-Mobile USA, Inc.' Loc:25.8119,-80.2318
+    2020-08-06 12:09:27 DATA:  POST/h2 Code:302 https://pigallery.ddns.net/api/auth From:::ffff:172.58.11.104 Size:46 OS:'Android' Device:'Samsung' Agent:'Chrome Mobile.77.0' Geo:'NA/US/Miami' ASN:'T-Mobile USA, Inc.' Loc:25.8119,-80.2318
+    ...
+  

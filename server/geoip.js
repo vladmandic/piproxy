@@ -1,5 +1,6 @@
+const fs = require('fs');
 const maxmind = require('maxmind');
-const log = require('pilogger');
+const log = require('@vladmandic/pilogger');
 const proc = require('process');
 
 let geoCity;
@@ -7,9 +8,11 @@ let geoASN;
 
 async function init() {
   try {
-    geoCity = await maxmind.open('./geoip/GeoLite2-City.mmdb');
-    geoASN = await maxmind.open('./geoip/GeoLite2-ASN.mmdb');
-    log.state('GeoIP databases loaded');
+    if (fs.existsSync(global.config.geoIP.city) && fs.existsSync(global.config.geoIP.asn)) {
+      geoCity = await maxmind.open(global.config.geoIP.city);
+      geoASN = await maxmind.open(global.config.geoIP.asn);
+      log.state('GeoIP databases loaded');
+    }
   } catch {
     log.warn('GeoIP failed to open database');
   }

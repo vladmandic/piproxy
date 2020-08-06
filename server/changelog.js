@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const moment = require('moment');
 const simpleGit = require('simple-git/promise');
-const log = require('pilogger');
+const log = require('@vladmandic/pilogger');
 
 async function update(f) {
   const git = simpleGit();

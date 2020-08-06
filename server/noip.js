@@ -1,5 +1,5 @@
 const superagent = require('superagent');
-const log = require('pilogger');
+const log = require('@vladmandic/pilogger');
 const node = require('../package.json');
 
 let config = { hosts: [] };
