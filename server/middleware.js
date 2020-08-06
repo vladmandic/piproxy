@@ -6,7 +6,7 @@ const logger = require('./logger.js');
 const options = {
   limiter: {
     interval: 10, // in seconds
-    tokens: 100, // number of requests per interval
+    tokens: 500, // number of requests per interval
   },
   helmet: {
     frameguard: { action: 'deny' },
