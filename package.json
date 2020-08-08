@@ -17,7 +17,11 @@
   },
   "keywords": [
     "nodejs",
-    "proxy"
+    "proxy",
+    "http2",
+    "letsencrypt",
+    "geoip",
+    "rate-limiter"
   ],
   "author": "Vladimir Mandic <mandic00@live.com>",
   "license": "MIT",
@@ -29,8 +33,8 @@
     "node": "14.0.0"
   },
   "dependencies": {
-    "@vladmandic/piacme": "^0.1.4",
-    "@vladmandic/pilogger": "^0.1.3",
+    "@vladmandic/piacme": "^0.1.7",
+    "@vladmandic/pilogger": "^0.1.7",
     "connect": "^3.7.0",
     "helmet": "^4.0.0",
     "http2-proxy": "^5.0.51",
@@ -45,7 +49,7 @@
     "depcheck": "^1.0.0",
     "eslint": "^7.6.0",
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-html": "^6.0.2",
+    "eslint-plugin-html": "^6.0.3",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-node": "^11.1.0",
