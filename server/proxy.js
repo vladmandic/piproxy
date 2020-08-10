@@ -58,12 +58,24 @@ function findTarget(req) {
   return res;
 }
 
+function dropPriviledges() {
+  const uid = parseInt(process.env.SUDO_UID, 10);
+  if (uid) {
+    process.setuid(uid);
+    log.state('Reducing runtime priviledges');
+    log.state(`Running as UID:${process.getuid()}`);
+  }
+}
+
 function startServer(ssl) {
-  // Start Proxy web server
+// Start Proxy web server
   global.config.http2.key = fs.readFileSync(path.join(__dirname, ssl.Key));
   global.config.http2.cert = fs.readFileSync(path.join(__dirname, ssl.Crt));
   const server = http2.createSecureServer(global.config.http2);
-  server.on('listening', () => log.state('Proxy listening:', server.address()));
+  server.on('listening', () => {
+    log.state('Proxy listening:', server.address());
+    dropPriviledges();
+  });
   server.on('error', (err) => log.error('Proxy error', err.message));
   server.on('close', () => log.state('Proxy closed'));
   // server.on('request', (req, res) => proxy.web(req, res, findTarget(req), errorHandler));
@@ -72,7 +84,7 @@ function startServer(ssl) {
 }
 
 async function init(ssl) {
-  // Redirect HTTP to HTTPS
+// Redirect HTTP to HTTPS
   redirectSecure();
 
   // Start proxy web server

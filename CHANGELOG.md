@@ -1,6 +1,12 @@
 # PiProxy Change Log
 
-### **origin/HEAD** 2020/08/06 cyan00@gmail.com
+### **origin/HEAD** 2020/08/08 cyan00@gmail.com
+
+- simplified dependencies
+
+- updated todo and changelog
+
+- updated
 
 ### **v1.0.5** 2020/08/06 cyan00@gmail.com
 

@@ -1,3 +1,4 @@
+const os = require('os');
 const fs = require('fs');
 const log = require('@vladmandic/pilogger');
 const acme = require('@vladmandic/piacme');
@@ -63,7 +64,7 @@ async function main() {
   // Log startup
   log.logFile(global.config.logFile);
   log.info(node.name, 'version', node.version);
-  log.info('Platform:', process.platform, 'Arch:', process.arch, 'Node:', process.version);
+  log.info('User:', os.userInfo().username, 'Platform:', process.platform, 'Arch:', process.arch, 'Node:', process.version);
   // Update changelog from git repository
   changelog.update('CHANGELOG.md');
   // update NoIP
