@@ -21,7 +21,8 @@
     "http2",
     "letsencrypt",
     "geoip",
-    "rate-limiter"
+    "rate-limiter",
+    "brotli"
   ],
   "author": "Vladimir Mandic <mandic00@live.com>",
   "license": "MIT",

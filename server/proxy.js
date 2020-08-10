@@ -1,4 +1,5 @@
 const fs = require('fs');
+const zlib = require('zlib');
 const path = require('path');
 const http = require('http');
 const http2 = require('http2');
@@ -29,6 +30,22 @@ function redirectSecure() {
   server.listen(80);
 }
 
+function writeHeaders(input, output, compress) {
+  for (const [key, val] of Object.entries(input.headers)) output.setHeader(key, val);
+  output.setHeader('x-powered-by', 'PiProxy');
+  if (compress) output.setHeader('content-encoding', 'br');
+}
+
+function writeData(_req, output, input) {
+  const encoding = (input.headers['content-encoding'] || '').length > 0; // is content already compressed?
+  const accept = _req.headers['accept-encoding'] ? _req.headers['accept-encoding'].includes('br') : false; // does target accept compressed data?
+  const compress = global.config.brotli && !encoding && accept; // is compression enabled, data uncompressed and target accepts compression?
+  writeHeaders(input, output, compress); // copy all headers from original response
+  const brotli = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 4 } });
+  if (compress) input.pipe(brotli).pipe(output); // compress data
+  else input.pipe(output); // don't compress data;
+}
+
 function findTarget(req) {
   const url = `${req.headers[':scheme']}://${req.headers[':authority']}${req.headers[':path']}`;
   const tgt = (global.config.redirects.find((a) => url.match(a.url))) || (global.config.redirects.find((a) => a.default === true));
@@ -36,22 +53,16 @@ function findTarget(req) {
   const res = {
     hostname: tgt.target,
     port: tgt.port,
-    onReq: (inReq, { headers }) => { // add headers to request going to target server
-      headers['x-forwarded-for'] = inReq.socket.remoteAddress;
-      headers['x-forwarded-proto'] = inReq.socket.encrypted ? 'https' : 'http';
-      headers['x-forwarded-host'] = inReq.headers[':authority'] || inReq.headers.host;
+    onReq: (_req) => { // add headers to request going to target server
+      _req.headers['x-forwarded-for'] = _req.socket.remoteAddress;
+      _req.headers['x-forwarded-proto'] = _req.socket.encrypted ? 'https' : 'http';
+      _req.headers['x-forwarded-host'] = _req.headers[':authority'] || _req.headers.host;
     },
-    onRes: (outReq, outRes, origRes) => { // add headers to response returning to client
-      outRes.setHeader('x-powered-by', 'PiProxy');
-      const obj = logger(outReq, origRes);
-      switch (origRes.statusCode) {
-        case 404:
-          outRes.write(errors.get404(obj));
-          outRes.end();
-          break;
-        default:
-          outRes.writeHead(origRes.statusCode, origRes.headers);
-          origRes.pipe(outRes);
+    onRes: (_req, output, input) => {
+      const obj = logger(_req, input);
+      switch (input.statusCode) {
+        case 404: output.end(errors.get404(obj)); break;
+        default: writeData(_req, output, input);
       }
     },
   };
@@ -76,7 +87,7 @@ function startServer(ssl) {
     log.state('Proxy listening:', server.address());
     dropPriviledges();
   });
-  server.on('error', (err) => log.error('Proxy error', err.message));
+  server.on('error', (err) => log.error('Proxy error', err.message || err));
   server.on('close', () => log.state('Proxy closed'));
   // server.on('request', (req, res) => proxy.web(req, res, findTarget(req), errorHandler));
   server.on('request', app);

@@ -53,7 +53,8 @@ global.config = {
     interval: 10,
     tokens: 500,
   },
-  enableHelmet: true,
+  helmet: true,
+  brotli: false,
   geoIP: {
     city: './geoip/GeoLite2-City.mmdb',
     asn: './geoip/GeoLite2-ASN.mmdb',

@@ -6,6 +6,7 @@
 - Can proxy to HTTP2, HTTPS or HTTP destinations
 - ACME/LetsEncrypt support for automatic creation and renewal of SSL certificates
 - No-IP support for automatic dynamic IP updates
+- Passthrough compression using Brotli algorithm
 - TLS version protection (TLS v1.2 and higher are allowed)
 - Helmet protection
 - Rate limiting
@@ -51,9 +52,11 @@ Entire configuration is inside `server/piproxy.js` config object
 - **limiter**
   If present, piproxy will use token-bucket style of http request limiting.  
   `tokens` is maximum number of requests a client can make within the `interval` seconds before server starts returning error 429.
-- **enableHelmet**  
+- **helmet**  
   Enables [Helmet](https://helmetjs.github.io/) and strict CSP protection.  
   Disable or configure manually in `server/middleware.js` `options.helmet` object if you have access permission errors on your site because security is too strict.
+- **brotli**
+  Enable passthrough compression using brotli. Only used if data is uncompressed and target accepts encoding.
 - **geoIP**  
   If optional `city` and `asn` databases are present, proxy will attempt reverse GeoIP lookup on access
 
@@ -96,7 +99,8 @@ Entire configuration is inside `server/piproxy.js` config object
       interval: 10,
       tokens: 500,
     },
-    enableHelmet: true,
+    helmet: true,
+    brotli: true,
     geoIP: {
       city: './geoip/GeoLite2-City.mmdb',
       asn: './geoip/GeoLite2-ASN.mmdb',
