@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/piproxy",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "PiProxy: NodeJS Web Proxy",
   "main": "server/piproxy.js",
   "scripts": {
