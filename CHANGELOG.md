@@ -1,5 +1,9 @@
 # PiProxy Change Log
 
+### **v1.0.7** 2020/08/10 cyan00@gmail.com
+
+- priviledge drop
+
 ### **origin/HEAD** 2020/08/08 cyan00@gmail.com
 
 - simplified dependencies
