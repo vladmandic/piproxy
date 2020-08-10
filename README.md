@@ -4,7 +4,7 @@
 
 - Native HTTP2 support as front-end
 - Can proxy to HTTP2, HTTPS or HTTP destinations
-- ACME/LetsEncrypt support for automatic creation and renewal of SSL certificates
+- ACME/LetsEncrypt support for automatic creation and renewal of free, valid and signed SSL certificates
 - No-IP support for automatic dynamic IP updates
 - Passthrough compression using Brotli algorithm
 - TLS version protection (TLS v1.2 and higher are allowed)
@@ -19,10 +19,12 @@
 Simply install and run:
 
 - Make sure you have [NodeJS](https://nodejs.org/en/) already installed
-- Clone repository `git clone https://github.com/vladmandic/piproxy` or  
-  Download and unpack from <https://github.com/vladmandic/piproxy/releases/>
-- Install using `./setup.js`  
-  This will install all dependencies as needednpm start
+- Clone repository  
+  `git clone https://github.com/vladmandic/piproxy`  
+  or download and unpack from <https://github.com/vladmandic/piproxy/releases/>
+- Install using  
+  `./setup.js`  
+  This will install all dependencies as needed
 - Run using:  
   `npm start` or  
   `node server/piproxy` or use  
@@ -32,32 +34,32 @@ Simply install and run:
 
 ## Configuration
 
-Entire configuration is inside `server/piproxy.js` config object
+Entire configuration is inside `server/piproxy.js` config object and all values are *optional*
 
-- **logFile**  
+- **logFile**: string  
   Proxy application and access log
-- **noip**  
+- **noip**: object  
   If list of hosts exists, piproxy will update dynamic ip for those hosts with no-ip as needed
-- **acme**  
+- **acme**: object  
   If object exists, piproxy will use piacme module for automatic key and certificate management
-- **ssl**
+- **ssl**: object  
   Used to manually specify server key and certificate if acme module is not used
-- **http2**  
+- **http2**: object  
   Object passed to [http2.createSecureServer](https://nodejs.org/api/http2.html#http2_http2_createsecureserver_options_onrequesthandler)
-- **redirectHTTP**  
+- **redirectHTTP**: boolean   
   Should http://* requests be redirected to https://
-- **redirects**  
+- **redirects**: array  
   List of redirects using `url(source) -> target:port` mapping.  
   Default object is used when there are no strict rule matches.
-- **limiter**
+- **limiter**: object  
   If present, piproxy will use token-bucket style of http request limiting.  
   `tokens` is maximum number of requests a client can make within the `interval` seconds before server starts returning error 429.
-- **helmet**  
+- **helmet**: object  
   Enables [Helmet](https://helmetjs.github.io/) and strict CSP protection.  
   Disable or configure manually in `server/middleware.js` `options.helmet` object if you have access permission errors on your site because security is too strict.
-- **brotli**
+- **brotli**: boolean  
   Enable passthrough compression using brotli. Only used if data is uncompressed and target accepts encoding.
-- **geoIP**  
+- **geoIP**: object  
   If optional `city` and `asn` databases are present, proxy will attempt reverse GeoIP lookup on access
 
 ### Example configuration
@@ -177,3 +179,5 @@ For custom error handling, see `server/proxy.js:findTarget()` function which cur
   2020-08-06 12:09:27 DATA:  POST/h2 Code:302 https://pigallery.ddns.net/api/auth From:::ffff:172.58.11.104 Size:46 OS:'Android' Device:'Samsung' Agent:'Chrome Mobile.77.0' Geo:'NA/US/Miami' ASN:'T-Mobile USA, Inc.' Loc:25.8119,-80.2318
   ...
 ```
+
+**Change log: <https://github.com/vladmandic/piproxy/CHANGELOG.md>**
