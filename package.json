@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/piproxy",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "PiProxy: NodeJS Web Proxy",
   "main": "server/piproxy.js",
   "scripts": {
@@ -55,6 +55,6 @@
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "npm-check-updates": "^7.0.3"
+    "npm-check-updates": "^7.1.0"
   }
 }
