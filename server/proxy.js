@@ -62,11 +62,18 @@ function findTarget(req) {
       _req.headers['x-forwarded-host'] = _req.headers[':authority'] || _req.headers.host;
     },
     onRes: (_req, output, input) => {
+      output.statusCode = input.statusCode;
       const obj = logger(_req, input);
       switch (input.statusCode) {
-        case 200: writeData(_req, output, input); break;
-        case 404: output.end(errors.get404(obj)); break;
-        default: input.pipe(output);
+        case 200:
+          writeData(_req, output, input);
+          break;
+        case 404:
+          output.end(errors.get404(obj));
+          break;
+        default:
+          writeHeaders(input, output, false);
+          input.pipe(output);
       }
     },
   };
