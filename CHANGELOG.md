@@ -1,5 +1,11 @@
 # PiProxy Change Log
 
+### **v1.0.9** 2020/08/11 cyan00@gmail.com
+
+- fix statuscode
+
+- ip resolving fix
+
 ### **origin/HEAD** 2020/08/10 cyan00@gmail.com
 
 ### **v1.0.8** 2020/08/10 cyan00@gmail.com
