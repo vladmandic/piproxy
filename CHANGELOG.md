@@ -1,10 +1,12 @@
 # PiProxy Change Log
 
+### **origin/HEAD** 2020/08/10 cyan00@gmail.com
+
 ### **v1.0.8** 2020/08/10 cyan00@gmail.com
 
 - implemented brotli compression
 
-### **origin/HEAD** 2020/08/10 cyan00@gmail.com
+- updated
 
 ### **v1.0.7** 2020/08/10 cyan00@gmail.com
 

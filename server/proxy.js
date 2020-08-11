@@ -31,7 +31,10 @@ function redirectSecure() {
 }
 
 function writeHeaders(input, output, compress) {
-  for (const [key, val] of Object.entries(input.headers)) output.setHeader(key, val);
+  for (const [key, val] of Object.entries(input.headers)) {
+    output.setHeader(key, val);
+    // input.removeHeader(key);
+  }
   output.setHeader('x-powered-by', 'PiProxy');
   if (compress) output.setHeader('content-encoding', 'br');
 }
@@ -61,8 +64,9 @@ function findTarget(req) {
     onRes: (_req, output, input) => {
       const obj = logger(_req, input);
       switch (input.statusCode) {
+        case 200: writeData(_req, output, input); break;
         case 404: output.end(errors.get404(obj)); break;
-        default: writeData(_req, output, input);
+        default: input.pipe(output);
       }
     },
   };
