@@ -55,6 +55,7 @@ global.config = {
   },
   helmet: true,
   brotli: true,
+  db: 'piproxy.db',
   geoIP: {
     city: './geoip/GeoLite2-City.mmdb',
     asn: './geoip/GeoLite2-ASN.mmdb',

@@ -1,11 +1,13 @@
 const log = require('@vladmandic/pilogger');
-const useragent = require('useragent');
 const geoip = require('./geoip.js');
 
 function parse(req) {
   const obj = {};
   obj.head = req.headers;
-  obj.agent = useragent.lookup(obj.head['user-agent']);
+  const agent = (req.headers['user-agent'] || '').replace('(KHTML, like Gecko)', '').replace('Mozilla/5.0', '').replace('/  /g', ' ');
+  const device = agent.match(/\((.*)\)/);
+  obj.device = device && device.length > 0 ? device[1] : 'unknown';
+  obj.agent = agent.replace(/\(.*\)/, '').replace(/  /g, ' ').trim();
   obj.peer = req.socket._peername || {};
   obj.ip = obj.peer.address || req.socket.remoteAddress;
   obj.geo = obj.ip ? geoip.get(obj.ip) : {};
@@ -15,10 +17,29 @@ function parse(req) {
 
 function logger(req, res) {
   const obj = parse(req);
-  const agentDetails = `OS:'${obj.agent.os.family}' Device:'${obj.agent.device.family}' Agent:'${obj.agent.family}.${obj.agent.major}.${obj.agent.minor}'`;
   const geoDetails = obj.geo.country ? `Geo:'${obj.geo.continent}/${obj.geo.country}/${obj.geo.city}' ASN:'${obj.geo.asn}' Loc:${obj.geo.lat},${obj.geo.lon}` : '';
   const size = res.headers ? (res.headers['content-length'] || res.headers['content-size'] || 0) : 0;
-  log.data(`${req.method}/${req.socket.alpnProtocol || req.httpVersion} Code:${res.statusCode} ${obj.client} From:${obj.ip} Size:${size} ${agentDetails} ${geoDetails}`);
+  log.data(`${req.method}/${req.socket.alpnProtocol || req.httpVersion} Code:${res.statusCode} ${obj.client} From:${obj.ip} Size:${size} Agent:${obj.agent} Device:${obj.device} ${geoDetails}`);
+  const record = {
+    timestamp: new Date(),
+    method: req.method,
+    protocol: (req.socket.alpnProtocol || req.httpVersion),
+    status: res.statusCode,
+    client: obj.client,
+    ip: obj.ip,
+    length: size,
+    agent: obj.agent,
+    device: obj.device,
+    country: obj.geo.country,
+    continent: obj.geo.continent,
+    city: obj.geo.city,
+    asn: obj.geo.asn,
+    lat: obj.geo.lat,
+    lon: obj.geo.lon,
+    accuracy: obj.geo.accuracy,
+    duration: Math.trunc(parseFloat(res.performance) / 1000000),
+  };
+  if (global.db) global.db.insert(record);
   return obj;
 }
 

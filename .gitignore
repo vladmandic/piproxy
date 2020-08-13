@@ -3,3 +3,4 @@ piproxy.log
 cert/**
 geoip/**
 setup.json
+piproxy.db

@@ -41,6 +41,7 @@
     "prefer-destructuring": "off",
     "promise/always-return": "off",
     "promise/catch-or-return": "off",
-    "promise/no-nesting": "off"
+    "promise/no-nesting": "off",
+    "no-regex-spaces":"off"
   }
 }

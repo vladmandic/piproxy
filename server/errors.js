@@ -9,8 +9,8 @@ function geo(obj) {
 
 function agent(obj) {
   const html = obj.agent ? `
-    OS: <b>${obj.agent.os.family}</b> <b>${obj.agent.os.major}.${obj.agent.os.minor}</b> Device: <b>${obj.agent.device.family}</b>
-    Agent: <b>${obj.agent.family}.${obj.agent.major}.${obj.agent.minor}</b><br>
+    Agent: <b>${obj.agent}</b><br>
+    Device: <b>${obj.device}</b><br>
   ` : '';
   return html;
 }

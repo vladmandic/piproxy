@@ -5,9 +5,11 @@ const http = require('http');
 const http2 = require('http2');
 const log = require('@vladmandic/pilogger');
 const proxy = require('http2-proxy');
+const nedb = require('nedb-promises');
 const middleware = require('./middleware.js');
 const logger = require('./logger.js');
 const errors = require('./errors.js');
+const stats = require('./stats.js');
 
 let app;
 
@@ -53,6 +55,7 @@ function findTarget(req) {
   const url = `${req.headers[':scheme']}://${req.headers[':authority']}${req.headers[':path']}`;
   const tgt = (global.config.redirects.find((a) => url.match(a.url))) || (global.config.redirects.find((a) => a.default === true));
   // log.data('Proxy rule matched:', url, tgt);
+  const t0 = process.hrtime.bigint();
   const res = {
     hostname: tgt.target,
     port: tgt.port,
@@ -63,12 +66,16 @@ function findTarget(req) {
     },
     onRes: (_req, output, input) => {
       output.statusCode = input.statusCode;
+      const t1 = process.hrtime.bigint();
+      input.performance = t1 - t0;
+      output.performance = t1 - t0;
       const obj = logger(_req, input);
       switch (input.statusCode) {
         case 200:
           writeData(_req, output, input);
           break;
         case 404:
+          writeHeaders(input, output, false);
           output.end(errors.get404(obj));
           break;
         default:
@@ -100,7 +107,6 @@ function startServer(ssl) {
   });
   server.on('error', (err) => log.error('Proxy error', err.message || err));
   server.on('close', () => log.state('Proxy closed'));
-  // server.on('request', (req, res) => proxy.web(req, res, findTarget(req), errorHandler));
   server.on('request', app);
   server.listen(global.config.http2.port);
 }
@@ -108,6 +114,11 @@ function startServer(ssl) {
 async function init(ssl) {
 // Redirect HTTP to HTTPS
   redirectSecure();
+
+  // Load log database
+  log.info('Log database:', path.resolve(global.config.db));
+  global.db = nedb.create({ filename: path.resolve(global.config.db), inMemoryOnly: false, timestampData: false, autoload: false });
+  await global.db.loadDatabase();
 
   // Start proxy web server
   app = await middleware.init();
@@ -119,7 +130,8 @@ async function init(ssl) {
   // Actual proxy calls
   log.info('Activating reverse proxy');
   // eslint-disable-next-line no-unused-vars
-  app.use((req, res, next) => proxy.web(req, res, findTarget(req), errorHandler));
+  app.use((req, res, next) => stats.get(req, res, next));
+  app.use((req, res) => proxy.web(req, res, findTarget(req), errorHandler));
 }
 
 exports.init = init;

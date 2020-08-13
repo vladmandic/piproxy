@@ -10,12 +10,13 @@ After=network.target network-online.target
 
 [Service]
 Type=simple
-ExecStart=/home/vlado/.nvm/versions/node/v14.4.0/bin/node server/piproxy.js
+Environment="NODE_ENV=production"
+ExecStart=/home/vlado/.nvm/versions/node/v14.8.0/bin/node server/piproxy.js
 WorkingDirectory=/home/vlado/dev/piproxy
 StandardOutput=inherit
 StandardError=inherit
 Restart=always
-RestartSec=60
+RestartSec=300
 User=vlado
 StandardOutput=null
 
