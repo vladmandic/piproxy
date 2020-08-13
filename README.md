@@ -13,6 +13,8 @@
 - Custom error handling
 - GeoIP reverse lookups on access
 - Agent analysis on access
+- Text file and DB logging
+- Built-in statistcs
 
 ## Run
 
@@ -31,6 +33,20 @@ Simply install and run:
   `piproxy.service` as a template (notes are within service file) to create a Linux service  
   
   (see section on security to see how to run as non-root)
+
+## Statistics
+
+You can access PiProxy statistics on any domain it serves under `/piproxy`.  
+Example: <https://test.example.com>
+
+```json
+PiProxy Statistics
+Records: 3735 Unique IPs: 6 ASNs: 4 Continents: 3 Agents: 7 Devices: 5
+Last log:
+2020-08-13T15:30:41.578Z method:GET protocol:h2 status:200 client:https://pimiami.ddns.net/piproxy ip:::ffff:192.168.0.200 length:0 agent:AppleWebKit/537.36 Chrome/84.0.4147.125 Safari/537.36 Edg/84.0.522.59 device:Windows NT 10.0; Win64; x64 duration:null _id:09gXzAyv56dHLe25
+Error log:
+2020-08-13T15:07:20.817Z method:GET protocol:h2 status:404 client:https://pimiami.ddns.net/test ip:::ffff:127.0.0.1 length:0 agent:curl/7.68.0 device:unknown duration:4 _id:MooAnQF74aZuzWo4
+````
 
 ## Configuration
 
@@ -59,6 +75,8 @@ Entire configuration is inside `server/piproxy.js` config object and all values 
   Disable or configure manually in `server/middleware.js` `options.helmet` object if you have access permission errors on your site because security is too strict.
 - **brotli**: boolean  
   Enable passthrough compression using brotli. Only used if data is uncompressed and target accepts encoding.
+- **db**: string  
+  Filename for database log, used by statistics module
 - **geoIP**: object  
   If optional `city` and `asn` databases are present, proxy will attempt reverse GeoIP lookup on access
 
@@ -103,6 +121,7 @@ Entire configuration is inside `server/piproxy.js` config object and all values 
     },
     helmet: true,
     brotli: true,
+    db: 'piproxy.db',
     geoIP: {
       city: './geoip/GeoLite2-City.mmdb',
       asn: './geoip/GeoLite2-ASN.mmdb',
