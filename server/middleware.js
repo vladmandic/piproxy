@@ -18,6 +18,7 @@ const options = {
         'img-src': ["'self'", 'data:', 'http:', 'https:'],
         'script-src': ["'self'", "'unsafe-inline'"],
         'style-src': ["'self'", 'https:', "'unsafe-inline'"],
+        'connect-src': ["'self'", 'http:', 'https:'],
         'upgrade-insecure-requests': [],
       },
     },
