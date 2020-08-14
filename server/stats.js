@@ -26,7 +26,7 @@ function table(input) {
   return tbl;
 }
 
-async function html() {
+async function html(url) {
   if (!global.db) return '';
   const ips = [];
   const asn = [];
@@ -36,7 +36,16 @@ async function html() {
   const device = [];
   const last = [];
   const errors = [];
-  const db = await global.db.find({}).sort({ timestamp: -1 });
+  let query = {};
+  try {
+    const uri = decodeURIComponent(url.includes('?') ? url.split('?')[1] : '');
+    query = JSON.parse(`{ ${uri} }`);
+  } catch { /**/ }
+  let db = [];
+  try {
+    db = await global.db.find(query).sort({ timestamp: -1 });
+  } catch { /**/ }
+  if (db.length <= 0) return '';
   for (const i in db) {
     const rec = db[i];
     if (!ips.includes(rec.ip)) ips.push(rec.ip);
@@ -73,18 +82,19 @@ async function html() {
         <h3>Countries:</h3>${str(country)}
       </div>
     </body>
-    </html>`;
+    </html>
+  `;
   return text;
 }
 
 async function get(req, res, next) {
-  if (req.url !== '/piproxy') {
+  if (!req.url.startsWith('/piproxy')) {
     next();
     return;
   }
   res.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-cache', 'X-Powered-By': `NodeJS/${process.version}` });
   logger(req, res);
-  res.end(await html(), 'utf-8');
+  res.end(await html(req.url), 'utf-8');
 }
 
 async function test() {

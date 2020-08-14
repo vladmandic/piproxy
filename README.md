@@ -34,20 +34,6 @@ Simply install and run:
   
   (see section on security to see how to run as non-root)
 
-## Statistics
-
-You can access PiProxy statistics on any domain it serves under `/piproxy`.  
-Example: <https://test.example.com>
-
-```json
-PiProxy Statistics
-Records: 3735 Unique IPs: 6 ASNs: 4 Continents: 3 Agents: 7 Devices: 5
-Last log:
-2020-08-13T15:30:41.578Z method:GET protocol:h2 status:200 client:https://pimiami.ddns.net/piproxy ip:::ffff:192.168.0.200 length:0 agent:AppleWebKit/537.36 Chrome/84.0.4147.125 Safari/537.36 Edg/84.0.522.59 device:Windows NT 10.0; Win64; x64 duration:null _id:09gXzAyv56dHLe25
-Error log:
-2020-08-13T15:07:20.817Z method:GET protocol:h2 status:404 client:https://pimiami.ddns.net/test ip:::ffff:127.0.0.1 length:0 agent:curl/7.68.0 device:unknown duration:4 _id:MooAnQF74aZuzWo4
-````
-
 ## Configuration
 
 Entire configuration is inside `server/piproxy.js` config object and all values are *optional*
@@ -226,5 +212,15 @@ For custom error handling, see `server/proxy.js:findTarget()` function which cur
     duration: 8
   }
 ```
+
+## Statistics
+
+You can access PiProxy statistics on any domain it serves under `/piproxy`.  
+Example: <https://test.example.com>
+
+## Advanced queries
+
+You can pass query params to statistics module directly using URL params (any database field can be queried):
+Example: <https://test.example.com/piproxy?'"host":"pimiami.ddns.net"'>
 
 **Change log: <https://github.com/vladmandic/piproxy/CHANGELOG.md>**

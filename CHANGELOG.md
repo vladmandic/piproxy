@@ -2,6 +2,8 @@
 
 ### **origin/HEAD** 2020/08/14 cyan00@gmail.com
 
+- improved db logging
+
 - updated
 
 ### **v1.0.10** 2020/08/13 cyan00@gmail.com
