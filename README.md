@@ -62,7 +62,7 @@ Entire configuration is inside `server/piproxy.js` config object and all values 
   Used to manually specify server key and certificate if acme module is not used
 - **http2**: object  
   Object passed to [http2.createSecureServer](https://nodejs.org/api/http2.html#http2_http2_createsecureserver_options_onrequesthandler)
-- **redirectHTTP**: boolean   
+- **redirectHTTP**: boolean
   Should http://* requests be redirected to https://
 - **redirects**: array  
   List of redirects using `url(source) -> target:port` mapping.  
@@ -197,6 +197,34 @@ For custom error handling, see `server/proxy.js:findTarget()` function which cur
   2020-08-06 12:09:24 DATA:  GET/h2 Code:404 https://pigallery.ddns.net/missing From:::ffff:172.58.11.104 Size:151 OS:'Android' Device:'Samsung' Agent:'Chrome Mobile.77.0' Geo:'NA/US/Miami' ASN:'T-Mobile USA, Inc.' Loc:25.8119,-80.2318
   2020-08-06 12:09:27 DATA:  POST/h2 Code:302 https://pigallery.ddns.net/api/auth From:::ffff:172.58.11.104 Size:46 OS:'Android' Device:'Samsung' Agent:'Chrome Mobile.77.0' Geo:'NA/US/Miami' ASN:'T-Mobile USA, Inc.' Loc:25.8119,-80.2318
   ...
+```
+
+## Example database record
+
+```json
+  {
+    timestamp: 2020-08-14T11:36:49.503Z,
+    method: 'GET',
+    protocol: 'h2',
+    status: 200,
+    scheme: 'https',
+    host: 'pimiami.ddns.net',
+    url: '/',
+    ip: '::ffff:172.58.173.63',
+    length: '3794',
+    agent: 'AppleWebKit/537.36 Chrome/77.0.3865.116 Mobile Safari/537.36 EdgA/45.07.4.5054',
+    device: 'Linux; Android 10; SM-G975U',
+    country: 'US',
+    continent: 'NA',
+    city: 'Orlando',
+    asn: 'T-Mobile USA, Inc.',
+    lat: 28.53,
+    lon: -81.4057,
+    accuracy: 500,
+    etag: 'W/"1a-0BqrfQKkcPxt5MD1uQ+QrVjOnGo"',
+    mime: 'text/html',
+    duration: 8
+  }
 ```
 
 **Change log: <https://github.com/vladmandic/piproxy/CHANGELOG.md>**

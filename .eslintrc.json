@@ -42,6 +42,7 @@
     "promise/always-return": "off",
     "promise/catch-or-return": "off",
     "promise/no-nesting": "off",
-    "no-regex-spaces":"off"
+    "no-regex-spaces":"off",
+    "dot-notation": "off"
   }
 }
