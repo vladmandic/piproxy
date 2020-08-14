@@ -1,5 +1,9 @@
 # PiProxy Change Log
 
+### **v1.0.11** 2020/08/14 cyan00@gmail.com
+
+- url query
+
 ### **origin/HEAD** 2020/08/14 cyan00@gmail.com
 
 - improved db logging
