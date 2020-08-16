@@ -2,6 +2,8 @@
 
 ### **origin/HEAD** 2020/08/14 cyan00@gmail.com
 
+- updated dependencies
+
 - updated
 
 ### **v1.0.11** 2020/08/14 cyan00@gmail.com

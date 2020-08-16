@@ -7,7 +7,6 @@ const noip = require('./noip.js');
 const geoip = require('./geoip.js');
 const changelog = require('./changelog.js');
 const proxy = require('./proxy.js');
-const node = require('../package.json');
 
 let secrets = {};
 if (fs.existsSync('./cert/secrets.json')) { // create private secrets file as required
@@ -64,9 +63,8 @@ global.config = {
 
 async function main() {
   // Log startup
-  log.logFile(global.config.logFile);
-  log.info(node.name, 'version', node.version);
-  log.info('User:', os.userInfo().username, 'Platform:', process.platform, 'Arch:', process.arch, 'Node:', process.version);
+  log.configure({ logFile: global.config.logFile });
+  log.header();
   // Update changelog from git repository
   changelog.update('CHANGELOG.md');
   // update NoIP
