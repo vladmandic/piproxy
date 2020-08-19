@@ -1,5 +1,11 @@
 # PiProxy Change Log
 
+### **v1.0.14** 2020/08/19 cyan00@gmail.com
+
+- automatic server monitoring
+
+- added predefined responses
+
 ### **origin/HEAD** 2020/08/19 cyan00@gmail.com
 
 - improved logging
