@@ -171,7 +171,7 @@ For custom error handling, see `server/proxy.js:findTarget()` function which cur
 
 ## Example log
 
-PiProxty startup:
+Sample PiProxy startup log:
 
 ```log
 2020-08-19 12:25:10 INFO:  @vladmandic/piproxy version 1.0.13
@@ -204,7 +204,7 @@ PiProxty startup:
 
 Note that in addition to request analysis, note that piproxy also measures duration of the response from target server as well as the length of the response.  
 
-Actual reverse proxy log:  
+Sample actual reverse proxy log:  
 
 ```log
 2020-08-19 11:33:15 DATA:  GET/h2 Code: 200 https://pimiami.ddns.net/ From:::ffff:172.58.14.224 Length: 3758 Agent:AppleWebKit/537.36 Chrome/77.0.3865.116 Mobile Safari/537.36 EdgA/45.07.4.5054 Device:Linux; Android 10; SM-G975U Geo:'NA/US/Miami' ASN:'T-Mobile USA, Inc.' Loc:25.8119,-80.2318
