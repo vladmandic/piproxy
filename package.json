@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/piproxy",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "PiProxy: NodeJS Web Proxy",
   "main": "server/piproxy.js",
   "scripts": {
@@ -34,7 +34,7 @@
     "node": "14.0.0"
   },
   "dependencies": {
-    "@vladmandic/piacme": "^0.1.7",
+    "@vladmandic/piacme": "^0.1.9",
     "@vladmandic/pilogger": "^0.1.11",
     "connect": "^3.7.0",
     "helmet": "^4.1.0",
