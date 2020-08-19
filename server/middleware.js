@@ -16,7 +16,7 @@ const options = {
       directives: {
         'default-src': ["'self'"],
         'img-src': ["'self'", 'data:', 'http:', 'https:'],
-        'script-src': ["'self'", "'unsafe-inline'"],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
         'style-src': ["'self'", 'https:', "'unsafe-inline'"],
         'connect-src': ["'self'", 'http:', 'https:'],
         'upgrade-insecure-requests': [],

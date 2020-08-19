@@ -35,14 +35,14 @@
   },
   "dependencies": {
     "@vladmandic/piacme": "^0.1.7",
-    "@vladmandic/pilogger": "^0.1.9",
+    "@vladmandic/pilogger": "^0.1.11",
     "connect": "^3.7.0",
     "helmet": "^4.1.0",
     "http2-proxy": "^5.0.51",
     "maxmind": "^4.1.4",
     "moment": "^2.27.0",
     "nedb-promises": "^4.0.4",
-    "simple-git": "^2.17.0",
+    "simple-git": "^2.18.0",
     "superagent": "^5.3.1"
   },
   "devDependencies": {

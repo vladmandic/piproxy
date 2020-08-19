@@ -1,6 +1,10 @@
 # PiProxy Change Log
 
-### **origin/HEAD** 2020/08/14 cyan00@gmail.com
+### **origin/HEAD** 2020/08/16 cyan00@gmail.com
+
+- update
+
+- update csp policy
 
 - updated dependencies
 

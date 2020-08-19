@@ -1,4 +1,3 @@
-const os = require('os');
 const fs = require('fs');
 const log = require('@vladmandic/pilogger');
 const acme = require('@vladmandic/piacme');
