@@ -10,6 +10,7 @@ const middleware = require('./middleware.js');
 const logger = require('./logger.js');
 const errors = require('./errors.js');
 const stats = require('./stats.js');
+const predefined = require('./predefined.js');
 
 let app;
 
@@ -130,6 +131,7 @@ async function init(ssl) {
   // Actual proxy calls
   log.info('Activating reverse proxy');
   // eslint-disable-next-line no-unused-vars
+  app.use((req, res, next) => predefined.get(req, res, next));
   app.use((req, res, next) => stats.get(req, res, next));
   app.use((req, res) => proxy.web(req, res, findTarget(req), errorHandler));
 }

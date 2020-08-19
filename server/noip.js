@@ -16,7 +16,7 @@ async function update(initial) {
         const text = (res && res.text) ? res.text.replace('\r\n', '') : 'unknown';
         const status = (res && res.status) ? res.status : 'unknown';
         const rec = { hostname, status, text };
-        log.state('NoIP', JSON.stringify(rec));
+        log.state('NoIP', rec);
       })
       .catch((err) => {
         log.warn(`NoIP error: ${err}`);

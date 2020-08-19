@@ -12,7 +12,7 @@ function parse(req, res) {
   obj.ip = obj.peer.address || req.socket.remoteAddress;
   obj.geo = obj.ip ? geoip.get(obj.ip) : {};
   obj.client = `${obj.head[':scheme'] || (req.socket.encrypted ? 'https' : 'http')}://${obj.head[':authority'] || obj.head.host}${req.url}`;
-  obj.size = res.headers ? (res.headers['content-length'] || res.headers['content-size'] || 0) : 0;
+  obj.size = res.headers ? parseInt((res.headers['content-length'] || res.headers['content-size'] || 0), 10) : 0;
   obj.etag = res.headers ? res.headers['etag'] : undefined;
   obj.type = res.headers ? res.headers['content-type'] : undefined;
   return obj;
@@ -21,7 +21,7 @@ function parse(req, res) {
 function logger(req, res) {
   const obj = parse(req, res);
   const geoDetails = obj.geo.country ? `Geo:'${obj.geo.continent}/${obj.geo.country}/${obj.geo.city}' ASN:'${obj.geo.asn}' Loc:${obj.geo.lat},${obj.geo.lon}` : '';
-  log.data(`${req.method}/${req.socket.alpnProtocol || req.httpVersion} Code:${res.statusCode} ${obj.client} From:${obj.ip} Length:${obj.size} Agent:${obj.agent} Device:${obj.device} ${geoDetails}`);
+  log.data(`${req.method}/${req.socket.alpnProtocol || req.httpVersion} Code:`, res.statusCode, `${obj.client} From:${obj.ip} Length:`, obj.size, `Agent:${obj.agent} Device:${obj.device} ${geoDetails}`);
   const record = {
     timestamp: new Date(),
     method: req.method,

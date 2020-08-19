@@ -3,28 +3,6 @@ const helmet = require('helmet');
 const log = require('@vladmandic/pilogger');
 const logger = require('./logger.js');
 
-const options = {
-  helmet: {
-    frameguard: { action: 'deny' },
-    xssFilter: false,
-    dnsPrefetchControl: { allow: 'true' },
-    noSniff: false,
-    hsts: { maxAge: 15552000, preload: true },
-    referrerPolicy: { policy: 'no-referrer' },
-    expectCt: { enforce: true },
-    contentSecurityPolicy: {
-      directives: {
-        'default-src': ["'self'"],
-        'img-src': ["'self'", 'data:', 'http:', 'https:'],
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-        'style-src': ["'self'", 'https:', "'unsafe-inline'"],
-        'connect-src': ["'self'", 'http:', 'https:'],
-        'upgrade-insecure-requests': [],
-      },
-    },
-  },
-};
-
 const bucket = [];
 
 function limiter(req, res, next) {
@@ -58,8 +36,8 @@ function limiter(req, res, next) {
 async function init() {
   const app = connect();
   if (global.config.helmet) {
-    log.info('Enabling Helmet protection:' /* , options.helmet */);
-    app.use(helmet(options.helmet));
+    log.info('Enabling Helmet protection'); // global.config.helmet.contentSecurityPolicy.directives);
+    app.use(helmet(global.config.helmet));
   }
   if (global.config.limiter) {
     log.info('Enabling rate limiter:', global.config.limiter);

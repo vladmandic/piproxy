@@ -51,13 +51,36 @@ global.config = {
     interval: 10,
     tokens: 500,
   },
-  helmet: true,
   brotli: true,
   db: 'piproxy.db',
   geoIP: {
     city: './geoip/GeoLite2-City.mmdb',
     asn: './geoip/GeoLite2-ASN.mmdb',
   },
+  helmet: {
+    frameguard: { action: 'deny' },
+    xssFilter: false,
+    dnsPrefetchControl: { allow: 'true' },
+    noSniff: false,
+    hsts: { maxAge: 15552000, preload: true },
+    referrerPolicy: { policy: 'no-referrer' },
+    expectCt: { enforce: true },
+    contentSecurityPolicy: {
+      directives: {
+        'default-src': ["'self'"],
+        'img-src': ["'self'", 'data:', 'http:', 'https:'],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        'style-src': ["'self'", 'https:', "'unsafe-inline'"],
+        'connect-src': ["'self'", 'http:', 'https:'],
+        'upgrade-insecure-requests': [],
+      },
+    },
+  },
+  'security.txt': 'Contact: mailto:mandic00@live.com\nPreferred-Languages: en\n',
+  'humans.txt': '/* TEAM */\nChef: Vladimir Mandic\nContact: mandic00@live.com\nGitHub: https://github.com/vladmandic\n',
+  'robots.txt': 'User-agent: *\nDisallow: /private\nCrawl-delay: 10\n',
+  'git.head': 'ref: refs/heads/master\n',
+  'sitemap.xml': '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n<url>\n<loc>URL</loc>\n</url>\n</urlset>',
 };
 
 async function main() {
