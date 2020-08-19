@@ -68,7 +68,7 @@ global.config = {
     Key: 'file-with-server-private-key',
     Crt: 'file-with-server-certificate',
   },
-  // run as http2 server instead of standard https
+  // piproxy runs as secure http2 server while target server can be anything
   http2: {
     allowHTTP1: true,
     port: 443,
@@ -83,6 +83,8 @@ global.config = {
     { url: 'example3.ddns.net', target: 'localhost', port: '8002' },
     { default: true, target: 'localhost', port: '8000' },
   ],
+  // automatic status monitoring of both destination urls and targets listed in redirects
+  monitor: true,
   // if present, piproxy will throttle requests
   limiter: {
     interval: 10,
@@ -172,29 +174,35 @@ For custom error handling, see `server/proxy.js:findTarget()` function which cur
 PiProxty startup:
 
 ```log
-2020-08-19 11:30:01 INFO:  @vladmandic/piproxy version 1.0.13
-2020-08-19 11:30:01 INFO:  User: vlado Platform: linux Arch: x64 Node: v14.8.0
-2020-08-19 11:30:01 STATE:  Application log: /home/vlado/dev/piproxy/piproxy.log
-2020-08-19 11:30:01 INFO:  ACME certificate: check: ./cert/fullchain.pem
-2020-08-19 11:30:01 STATE:  Change log updated: /home/vlado/dev/piproxy/CHANGELOG.md
-2020-08-19 11:30:01 INFO:  SSL account: mailto:mandic00@live.com created: 2020-04-23 21:55:15
-2020-08-19 11:30:01 INFO:  SSL keys server:RSA account:EC
-2020-08-19 11:30:01 INFO:  SSL certificate subject:pidash.ddns.net issuer:Let's Encrypt Authority X3
-2020-08-19 11:30:02 STATE:  SSL certificate expires in 34.4 days, skipping renewal
-2020-08-19 11:30:02 STATE:  GeoIP databases loaded
-2020-08-19 11:30:02 INFO:  Log database: /home/vlado/dev/piproxy/piproxy.db
-2020-08-19 11:30:02 INFO:  Enabling Helmet protection
-2020-08-19 11:30:02 INFO:  Enabling rate limiter: { interval: 10, tokens: 500 }
-2020-08-19 11:30:02 INFO:   Rule: { url: 'pidash.ddns.net', target: 'localhost', port: '10000' }
-2020-08-19 11:30:02 INFO:   Rule: { url: 'pigallery.ddns.net', target: 'localhost', port: '10010' }
-2020-08-19 11:30:02 INFO:   Rule: { url: 'pimiami.ddns.net', target: 'localhost', port: '10020' }
-2020-08-19 11:30:02 INFO:   Rule: { url: 'wyse', target: 'localhost', port: '10010' }
-2020-08-19 11:30:02 INFO:   Rule: { default: true, target: 'localhost', port: '10010' }
-2020-08-19 11:30:02 INFO:  Activating reverse proxy
-2020-08-19 11:30:02 STATE:  Proxy listening: { address: '::', family: 'IPv6', port: 443 }
+2020-08-19 12:25:10 INFO:  @vladmandic/piproxy version 1.0.13
+2020-08-19 12:25:10 INFO:  User: vlado Platform: linux Arch: x64 Node: v14.8.0
+2020-08-19 12:25:10 STATE:  Application log: /home/vlado/dev/piproxy/piproxy.log
+2020-08-19 12:25:10 STATE:  Change log updated: /home/vlado/dev/piproxy/CHANGELOG.md
+2020-08-19 12:25:10 INFO:  ACME certificate: check: ./cert/fullchain.pem
+2020-08-19 12:25:10 INFO:  SSL account: mailto:mandic00@live.com created: 2020-04-23 21:55:15
+2020-08-19 12:25:10 INFO:  SSL keys server:RSA account:EC
+2020-08-19 12:25:10 INFO:  SSL certificate subject:pidash.ddns.net issuer:Let's Encrypt Authority X3
+2020-08-19 12:25:10 STATE:  SSL certificate expires in 34.3 days, skipping renewal
+2020-08-19 12:25:10 STATE:  GeoIP databases loaded
+2020-08-19 12:25:10 INFO:  Log database: /home/vlado/dev/piproxy/piproxy.db
+2020-08-19 12:25:10 INFO:  Enabling Helmet protection
+2020-08-19 12:25:10 INFO:  Enabling rate limiter: { interval: 10, tokens: 500 }
+2020-08-19 12:25:10 INFO:   Rule: { url: 'pidash.ddns.net', target: 'localhost', port: '10000' }
+2020-08-19 12:25:10 INFO:   Rule: { url: 'pigallery.ddns.net', target: 'localhost', port: '10010' }
+2020-08-19 12:25:10 INFO:   Rule: { url: 'pimiami.ddns.net', target: 'localhost', port: '10020' }
+2020-08-19 12:25:10 INFO:   Rule: { default: true, target: 'localhost', port: '10010' }
+2020-08-19 12:25:10 INFO:  Activating reverse proxy
+2020-08-19 12:25:10 STATE:  Proxy listening: { address: '::', family: 'IPv6', port: 443 }
+2020-08-19 12:25:17 STATE:  Monitoring { url: 'pidash.ddns.net', target: 'localhost', port: '10000' } URL: { lookup: true, connect: true, ready: true } Target: { lookup: true, connect: true, ready: true }
+2020-08-19 12:25:17 STATE:  Monitoring { url: 'pigallery.ddns.net', target: 'localhost', port: '10010' } URL: { lookup: true, connect: true, ready: true } Target: { lookup: true, connect: true, ready: true }
+2020-08-19 12:25:17 STATE:  Monitoring { url: 'pimiami.ddns.net', target: 'localhost', port: '10020' } URL: { lookup: true, connect: true, ready: true } Target: { lookup: true, connect: true, ready: true }
+2020-08-19 12:25:17 STATE:  Monitoring { default: true, target: 'localhost', port: '10010' } URL: { lookup: true, connect: true, ready: true } Target: { lookup: true, connect: true, ready: true }
+2020-08-19 12:25:17 STATE:  NoIP { hostname: 'pimiami.ddns.net', status: 200, text: 'nochg 159.250.182.243' }
+2020-08-19 12:25:17 STATE:  NoIP { hostname: 'pigallery.ddns.net', status: 200, text: 'nochg 159.250.182.243' }
+2020-08-19 12:25:17 STATE:  NoIP { hostname: 'pidash.ddns.net', status: 200, text: 'nochg 159.250.182.243' }```
 ```
 
-Note that in addition to request analysis, note that piproxy also measures duration of the response from target server as well as the length of the response.
+Note that in addition to request analysis, note that piproxy also measures duration of the response from target server as well as the length of the response.  
 
 Actual reverse proxy log:  
 
@@ -245,7 +253,3 @@ Example: <https://example1.ddns.com/piproxy?'"host":"example1.ddns.net"'>
 ## Change log
 
 <https://github.com/vladmandic/piproxy/CHANGELOG.md>
-
-## Todo
-
-- Automatic target server monitoring

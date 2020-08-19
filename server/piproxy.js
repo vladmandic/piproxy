@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const noip = require('./noip.js');
 const geoip = require('./geoip.js');
 const changelog = require('./changelog.js');
+const monitor = require('./monitor.js');
 const proxy = require('./proxy.js');
 
 let secrets = {};
@@ -53,6 +54,7 @@ global.config = {
   },
   brotli: true,
   db: 'piproxy.db',
+  monitor: true,
   geoIP: {
     city: './geoip/GeoLite2-City.mmdb',
     asn: './geoip/GeoLite2-ASN.mmdb',
@@ -88,7 +90,7 @@ async function main() {
   log.configure({ logFile: global.config.logFile });
   log.header();
   // Update changelog from git repository
-  changelog.update('CHANGELOG.md');
+  await changelog.update('CHANGELOG.md');
   // update NoIP
   await noip.update(global.config.noip);
   // Check & Update SSL Certificate
@@ -99,11 +101,13 @@ async function main() {
   } else {
     ssl = global.config.ssl;
   }
-  acme.monitorCert();
+  await acme.monitorCert();
   // Load GeoIP DB
   await geoip.init();
   // Start actual redirector
-  proxy.init(ssl);
+  await proxy.init(ssl);
+  // Monitor target servers
+  await monitor.start();
 }
 
 main();
