@@ -2,10 +2,10 @@ const log = require('@vladmandic/pilogger');
 const http2 = require('http2');
 
 const options = {
-  tries: 500,
+  tries: 100,
   http2: {
-    target: 'http://pigallery.ddns.net',
-    ':path': '/true',
+    target: 'https://pigallery.ddns.net',
+    ':path': '/',
     rejectUnauthorized: false,
   },
   https: {
@@ -43,7 +43,7 @@ async function main() {
   // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
   if (process.argv[2]) options.http2.target = process.argv[2];
   // options.https.hostname = options.target;
-  log.info(`Starting benchmark: tries: ${options.tries} target ${options.target}`);
+  log.info(`Starting benchmark: tries: ${options.tries} target ${options.http2.target}`);
   const t0 = process.hrtime.bigint();
   let count = 0;
   for (let i = 0; i < options.tries; i++) {

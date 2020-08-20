@@ -90,9 +90,10 @@ global.config = {
     interval: 10,
     tokens: 500,
   },
-  // if present, piproxy will compress all responses before sending them out
+  // if present, piproxy will compress all responses with specific brotli compression level before sending them out
   // exception is if client does not understand enhanced compression or output has already been compressed
-  brotli: true,
+  // set to 0 to disable compression
+  brotli: 5,
   // log to database in addition to a log file
   db: 'piproxy.db',
   // use geoip reverse lookups to locate requests
@@ -239,6 +240,16 @@ Sample actual reverse proxy log:
     duration: 8
   }
 ```
+
+## Compression
+
+Quick note on compression efficiency on pure html:
+
+- L0: 2.1 MB (original without compression)
+- L1: 692 kB
+- L3: 577 kB
+- L5: 516 kB
+- L9: 494 kB
 
 ## Statistics
 

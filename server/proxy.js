@@ -45,9 +45,9 @@ function writeHeaders(input, output, compress) {
 function writeData(_req, output, input) {
   const encoding = (input.headers['content-encoding'] || '').length > 0; // is content already compressed?
   const accept = _req.headers['accept-encoding'] ? _req.headers['accept-encoding'].includes('br') : false; // does target accept compressed data?
-  const compress = global.config.brotli && !encoding && accept; // is compression enabled, data uncompressed and target accepts compression?
+  const compress = global.config.brotli && (global.config.brotli > 0) && !encoding && accept; // is compression enabled, data uncompressed and target accepts compression?
   writeHeaders(input, output, compress); // copy all headers from original response
-  const brotli = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: 4 } });
+  const brotli = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: global.config.brotli } });
   if (compress) input.pipe(brotli).pipe(output); // compress data
   else input.pipe(output); // don't compress data;
 }

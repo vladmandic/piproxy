@@ -1,12 +1,22 @@
 # PiProxy Change Log
 
+### **origin/HEAD** 2020/08/19 cyan00@gmail.com
+
+- added geoip db to git lfs
+
+- added
+
+- updated docs
+
+- update
+
 ### **v1.0.14** 2020/08/19 cyan00@gmail.com
 
 - automatic server monitoring
 
 - added predefined responses
 
-### **origin/HEAD** 2020/08/19 cyan00@gmail.com
+### **v1.0.13** 2020/08/19 cyan00@gmail.com
 
 - improved logging
 

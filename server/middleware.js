@@ -40,8 +40,11 @@ async function init() {
     app.use(helmet(global.config.helmet));
   }
   if (global.config.limiter) {
-    log.info('Enabling rate limiter:', global.config.limiter);
+    log.info('Enabling Rate limiter:', global.config.limiter);
     app.use(limiter);
+  }
+  if (global.config.brotli) {
+    log.info('Enabling Brotli compression:', global.config.brotli);
   }
   return app;
 }
