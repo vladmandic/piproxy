@@ -3,6 +3,7 @@
   "version": "1.0.15",
   "description": "PiProxy: NodeJS Web Proxy",
   "main": "server/piproxy.js",
+  "sideEffects": false,
   "scripts": {
     "start": "node server/piproxy.js",
     "setup": "./setup.js",

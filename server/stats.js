@@ -2,6 +2,7 @@ const nedb = require('nedb-promises');
 const logger = require('./logger');
 
 const limit = 20;
+const filtered = ['::ffff:127.0.0.1', '::ffff:192.168.0.1', '::ffff:192.168.0.200'];
 
 function str(input) {
   // eslint-disable-next-line prefer-template
@@ -48,12 +49,13 @@ async function html(url) {
   if (db.length <= 0) return '';
   for (const i in db) {
     const rec = db[i];
-    if (!ips.includes(rec.ip)) ips.push(rec.ip);
-    if (!asn.includes(rec.asn)) asn.push(rec.asn);
-    if (!continent.includes(rec.continent)) continent.push(rec.continent);
-    if (!country.includes(rec.country)) country.push(rec.country);
-    if (!agent.includes(rec.agent)) agent.push(rec.agent);
-    if (!device.includes(rec.device)) device.push(rec.device);
+    if (rec.ip && filtered.includes(rec.ip.toString().trim())) continue;
+    if (rec.ip && !ips.includes(rec.ip)) ips.push(rec.ip);
+    if (rec.asn && !asn.includes(rec.asn)) asn.push(rec.asn);
+    if (rec.continent && !continent.includes(rec.continent)) continent.push(rec.continent);
+    if (rec.country && (rec.country !== 'unknown') && !country.includes(rec.country)) country.push(rec.country);
+    if (rec.agent && !agent.includes(rec.agent)) agent.push(rec.agent);
+    if (rec.device && !device.includes(rec.device)) device.push(rec.device);
     if (i < limit) last.push(rec); // last += str(rec);
     if (rec.status >= 400) errors.push(rec); // errors += str(rec);
   }
@@ -103,7 +105,7 @@ async function test() {
     await global.db.loadDatabase();
   }
   // eslint-disable-next-line no-console
-  // console.log(await html());
+  console.log(await html());
   // const db = await global.db.find({}).sort({ timestamp: -1 });
   // console.log(table(db));
 }
