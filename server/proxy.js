@@ -16,7 +16,7 @@ let app;
 
 function errorHandler(err, req, res) {
   if (err) {
-    log.error('Proxy error', err.statusCode, err.code, err.address, err.port);
+    log.error('Proxy error', err.statusCode, err.code, err.address, err.port, err);
     res.setHeader('proxy-error', err);
     if (err.statusCode) res.writeHead(err.statusCode, res.headers);
     res.end();
