@@ -6,7 +6,7 @@ const noip = require('./noip.js');
 const geoip = require('./geoip.js');
 const changelog = require('./changelog.js');
 const monitor = require('./monitor.js');
-const proxy = require('./proxy.js');
+const server = require('./server.js');
 
 let secrets = {};
 if (fs.existsSync('./cert/secrets.json')) { // create private secrets file as required
@@ -105,7 +105,7 @@ async function main() {
   // Load GeoIP DB
   await geoip.init();
   // Start actual redirector
-  await proxy.init(ssl);
+  await server.init(ssl);
   // Monitor target servers
   await monitor.start();
 }

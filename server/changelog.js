@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const moment = require('moment');
 const simpleGit = require('simple-git/promise');
 const log = require('@vladmandic/pilogger');
 
@@ -13,7 +12,8 @@ async function update(f) {
     if (entry.refs !== '') {
       let ver = entry.refs.split(' ');
       ver = ver[ver.length - 1];
-      const date = moment(entry.date).format('YYYY/MM/DD');
+      const dt = new Date(entry.date);
+      const date = `${dt.getMonth()}/${dt.getDate()}/${dt.getFullYear()}`;
       if (ver !== 'master') text += `\n### **${ver}** ${date} ${entry.author_email}\n`;
     } else if (entry.message !== '') {
       text += `\n- ${entry.message}\n`;

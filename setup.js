@@ -27,35 +27,6 @@ async function exec(cmd, msg) {
   });
 }
 
-async function dependencyCheck() {
-  process.stdout.write('Running: Dependency check ...');
-  // eslint-disable-next-line node/no-unpublished-require
-  const depcheck = require('depcheck');
-  const options = {
-    ignoreBinPackage: false, // ignore the packages with bin entry
-    skipMissing: false, // skip calculation of missing dependencies
-    ignoreDirs: [],
-    ignoreMatches: ['htmlhint', 'minify', 'chart.js', 'eslint-plugin-*'],
-    // parsers: { '*.js': depcheck.parser.es6 },
-    detectors: [depcheck.detector.requireCallExpression, depcheck.detector.importDeclaration],
-    specials: [depcheck.special.eslint],
-  };
-  return new Promise((resolve) => {
-    depcheck(process.cwd(), options, (res) => {
-      npm.depcheck = res;
-      process.stdout.write(`\rDependency check: Unused={${res.dependencies}${res.devDependencies}} Missing=${JSON.stringify(res.missing)}\n`);
-      resolve(true);
-    });
-  });
-}
-
-async function auditCheck() {
-  npm.auditjs = await exec('./node_modules/.bin/auditjs ossi --quiet --json', 'OSSI audit check');
-  for (const pkg of npm.auditjs) {
-    process.stdout.write(`OSSI vulnerability in ${pkg.coordinates}\n`);
-  }
-}
-
 async function deleteExamples() {
   await exec('find node_modules -type d -name "example*" -exec rm -rf {} \\; 2>/dev/null', 'Deleting module samples');
 }
@@ -103,10 +74,6 @@ async function main() {
   npm.ls = await exec('npm ls --json', 'NPM list full');
   const meta = npm.prune.audit.metadata;
   process.stdout.write(`Total dependencies: production=${meta.dependencies} development=${meta.devDependencies} optional=${meta.optionalDependencies}\n`);
-
-  // 3rd party checks
-  await dependencyCheck();
-  await auditCheck();
 
   // npm.cache = await exec('npm cache verify', 'NPM verify cache');
 
