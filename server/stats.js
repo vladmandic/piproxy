@@ -1,5 +1,6 @@
 const nedb = require('nedb-promises');
 const logger = require('./logger');
+const monitor = require('./monitor');
 
 const limit = 50;
 // const filtered = ['::ffff:127.0.0.1', '::ffff:192.168.0.1', '::ffff:192.168.0.200'];
@@ -12,6 +13,11 @@ function str(input) {
 
 function table(input) {
   if (input.length === 0) return '<table></table>\n';
+  const json = (obj) => JSON.stringify(obj)
+    .replace(/{|}|"|\[|\]/g, '')
+    .replace(/,/g, ', ')
+    .replace(/:true/g, '<font color="lightgreen">:■</font>')
+    .replace(/:false/g, '<font color="lightcoral">:■</font>');
   let tbl = '<table style="text-align: left; font-size: 0.7rem; font-family: monospace; white-space: nowrap">\n';
   tbl += ' <tr style="background: dimgrey;">';
   for (const key of Object.keys(input[0])) tbl += `<th>${key}</th>`;
@@ -19,7 +25,10 @@ function table(input) {
   for (const rec of input) {
     tbl += ' <tr>';
     tbl += `<td>${new Date(Object.values(rec)[0]).toLocaleString('en-US', { hour12: false })}</td>`;
-    for (let i = 1; i < Object.values(rec).length - 1; i++) tbl += `<td>${Object.values(rec)[i]}</td>`;
+    for (let i = 1; i < Object.values(rec).length; i++) {
+      const field = typeof Object.values(rec)[i] === 'object' ? json(Object.values(rec)[i]) : Object.values(rec)[i];
+      tbl += `<td>${field}</td>`;
+    }
     // for (const val of Object.values(rec)) tbl += `<td>${val}</td>`;
     tbl += ' </tr>\n';
   }
@@ -85,6 +94,7 @@ async function html(url) {
         <h1>PiProxy Statistics</h1>
         <h3>DB Start: ${new Date(db[db.length - 1].timestamp).toLocaleString('en-US', { hour12: false })}</h2>
         <h3>Records: ${db.length} | Unique IPs: ${stat.ips.length} | ASNs: ${stat.asn.length} | Continents: ${stat.continent.length} | Countries: ${stat.country.length} | Agents: ${stat.agent.length} | Devices: ${stat.device.length}</h2>
+        <h3>Status:</h3><div id="log-status">${table(await monitor.get())}</div>
         <h3>Last log:</h3><div id="log-last">${table(stat.last)}</div>
         <h3>Error log:</h3><div id="log-err">${table(stat.errors)}</div>
         <h3>ASNs:</h3>${str(stat.asn)}
