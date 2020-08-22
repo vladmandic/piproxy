@@ -2,6 +2,10 @@
 
 ### **origin/HEAD** 7/22/2020 cyan00@gmail.com
 
+- reduced dependencies
+
+- tweaks
+
 ### **v1.0.16** 7/22/2020 cyan00@gmail.com
 
 - econding fix
