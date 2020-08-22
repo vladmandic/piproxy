@@ -15,6 +15,8 @@ function parse(req, res) {
   obj.size = res.headers ? parseInt((res.headers['content-length'] || res.headers['content-size'] || 0), 10) : 0;
   obj.etag = res.headers ? res.headers['etag'] : undefined;
   obj.type = res.headers ? res.headers['content-type'] : undefined;
+  obj.cookie = obj.head.cookie ? true : false;
+  obj.jwt = obj.head.authorization ? true : false;
   return obj;
 }
 
@@ -43,6 +45,8 @@ function logger(req, res) {
     accuracy: obj.geo.accuracy || 0,
     etag: obj.etag || '',
     mime: obj.type || '',
+    cookie: obj.cookie,
+    jwt: obj.jwt,
     duration: Math.trunc(parseFloat(res.performance) / 1000000) || 0,
   };
   if (global.db) global.db.insert(record);

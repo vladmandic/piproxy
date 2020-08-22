@@ -1,8 +1,8 @@
 const nedb = require('nedb-promises');
 const logger = require('./logger');
 
-const limit = 20;
-const filtered = ['::ffff:127.0.0.1', '::ffff:192.168.0.1', '::ffff:192.168.0.200'];
+const limit = 50;
+// const filtered = ['::ffff:127.0.0.1', '::ffff:192.168.0.1', '::ffff:192.168.0.200'];
 
 function str(input) {
   // eslint-disable-next-line prefer-template
@@ -29,14 +29,16 @@ function table(input) {
 
 async function html(url) {
   if (!global.db) return '';
-  const ips = [];
-  const asn = [];
-  const continent = [];
-  const country = [];
-  const agent = [];
-  const device = [];
-  const last = [];
-  const errors = [];
+  const stat = {
+    ips: [],
+    asn: [],
+    continent: [],
+    country: [],
+    agent: [],
+    device: [],
+    last: [],
+    errors: [],
+  };
   let query = {};
   try {
     const uri = decodeURIComponent(url.includes('?') ? url.split('?')[1] : '');
@@ -47,18 +49,25 @@ async function html(url) {
     db = await global.db.find(query).sort({ timestamp: -1 });
   } catch { /**/ }
   if (db.length <= 0) return '';
-  for (const i in db) {
-    const rec = db[i];
-    if (rec.ip && filtered.includes(rec.ip.toString().trim())) continue;
-    if (rec.ip && !ips.includes(rec.ip)) ips.push(rec.ip);
-    if (rec.asn && !asn.includes(rec.asn)) asn.push(rec.asn);
-    if (rec.continent && !continent.includes(rec.continent)) continent.push(rec.continent);
-    if (rec.country && (rec.country !== 'unknown') && !country.includes(rec.country)) country.push(rec.country);
-    if (rec.agent && !agent.includes(rec.agent)) agent.push(rec.agent);
-    if (rec.device && !device.includes(rec.device)) device.push(rec.device);
-    if (i < limit) last.push(rec); // last += str(rec);
-    if (rec.status >= 400) errors.push(rec); // errors += str(rec);
+  let i = 0;
+  for (const rec of db) {
+    // if (rec.ip && filtered.includes(rec.ip.toString().trim())) continue;
+    i += 1;
+    if (rec.ip && !stat.ips.includes(rec.ip)) stat.ips.push(rec.ip);
+    if (rec.asn && !stat.asn.includes(rec.asn)) stat.asn.push(rec.asn);
+    if (rec.continent && !stat.continent.includes(rec.continent)) stat.continent.push(rec.continent);
+    if (rec.country && (rec.country !== 'unknown') && !stat.country.includes(rec.country)) stat.country.push(rec.country);
+    if (rec.agent && !stat.agent.includes(rec.agent)) stat.agent.push(rec.agent);
+    if (rec.device && !stat.device.includes(rec.device)) stat.device.push(rec.device);
+    if (i < limit) stat.last.push(rec); // last += str(rec);
+    if (rec.status >= 400) stat.errors.push(rec); // errors += str(rec);
+    if (stat.errors.length > limit) stat.errors.length = limit;
   }
+  stat.asn = stat.asn.sort((a, b) => (a > b ? 1 : -1));
+  stat.continent = stat.continent.sort((a, b) => (a > b ? 1 : -1));
+  stat.country = stat.country.sort((a, b) => (a > b ? 1 : -1));
+  stat.agent = stat.agent.sort((a, b) => (a > b ? 1 : -1));
+  stat.device = stat.device.sort((a, b) => (a > b ? 1 : -1));
   const text = `<!DOCTYPE html>
     <html lang="en">
     <head>
@@ -75,13 +84,13 @@ async function html(url) {
       <div style="display: block; margin: 10px">
         <h1>PiProxy Statistics</h1>
         <h3>DB Start: ${new Date(db[db.length - 1].timestamp).toLocaleString('en-US', { hour12: false })}</h2>
-        <h3>Records: ${db.length} Unique IPs: ${ips.length} ASNs: ${asn.length} Continents: ${continent.length} Countries: ${country.length} Agents: ${agent.length} Devices: ${device.length}</h2>
-        <h3>Last log:</h3>${table(last)}
-        <h3>Error log:</h3>${table(errors)}
-        <h3>ASNs:</h3>${str(asn)}
-        <h3>Agents:</h3>${str(agent)}
-        <h3>Devices:</h3>${str(device)}
-        <h3>Countries:</h3>${str(country)}
+        <h3>Records: ${db.length} | Unique IPs: ${stat.ips.length} | ASNs: ${stat.asn.length} | Continents: ${stat.continent.length} | Countries: ${stat.country.length} | Agents: ${stat.agent.length} | Devices: ${stat.device.length}</h2>
+        <h3>Last log:</h3><div id="log-last">${table(stat.last)}</div>
+        <h3>Error log:</h3><div id="log-err">${table(stat.errors)}</div>
+        <h3>ASNs:</h3>${str(stat.asn)}
+        <h3>Agents:</h3>${str(stat.agent)}
+        <h3>Devices:</h3>${str(stat.device)}
+        <h3>Countries:</h3>${str(stat.country)}
       </div>
     </body>
     </html>
@@ -94,9 +103,10 @@ async function get(req, res, next) {
     next();
     return;
   }
-  res.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-cache', 'X-Powered-By': `NodeJS/${process.version}` });
+  const text = await html(req.url);
+  res.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-cache', 'Content-Length': `${text.length}`, 'X-Powered-By': `NodeJS/${process.version}` });
+  res.end(text, 'utf-8');
   logger(req, res);
-  res.end(await html(req.url), 'utf-8');
 }
 
 async function test() {
@@ -104,8 +114,9 @@ async function test() {
     global.db = nedb.create({ filename: 'piproxy.db', inMemoryOnly: false, timestampData: false, autoload: false });
     await global.db.loadDatabase();
   }
+  // await global.db.remove({ ip: '::ffff:192.168.0.1' }, { multi: true });
   // eslint-disable-next-line no-console
-  console.log(await html());
+  // console.log(await html());
   // const db = await global.db.find({}).sort({ timestamp: -1 });
   // console.log(table(db));
 }
