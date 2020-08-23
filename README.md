@@ -10,7 +10,7 @@
 - Optional rate limiting using sliding window
 - TLS version protection (TLS v1.2 and higher are allowed)
 - Helmet and CSP protection
-- GeoIP reverse lookups on access
+- GeoIP reverse lookups on access (large package size is due to GeoIP lite databases included in the package)
 - Custom error handling
 - Agent analysis on access
 - Text file and DB logging
