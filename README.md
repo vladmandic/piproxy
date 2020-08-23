@@ -1,17 +1,17 @@
-# PiProxy: NodeJS Web Proxy
+# PiProxy: NodeJS Web Reverse Proxy  
 
 ## Features
 
 - Native HTTP2 support as front-end
 - Can proxy to HTTP2, HTTPS or HTTP destinations
 - ACME/LetsEncrypt support for automatic creation and renewal of free, valid and signed SSL certificates
-- No-IP support for automatic dynamic IP updates
-- Passthrough compression using Brotli algorithm
+- No-IP support for automatic dynamic IP updates such as ddns.net and others
+- Configurable passthrough compression using Brotli algorithm
+- Optional rate limiting using sliding window
 - TLS version protection (TLS v1.2 and higher are allowed)
-- Helmet protection
-- Rate limiting
-- Custom error handling
+- Helmet and CSP protection
 - GeoIP reverse lookups on access
+- Custom error handling
 - Agent analysis on access
 - Text file and DB logging
 - Performance and size measurements
@@ -243,7 +243,8 @@ Sample actual reverse proxy log:
 
 ## Compression
 
-Quick note on compression efficiency on pure html:
+PiProxy uses Brotli algorithm with a configurable level of compression.
+Example of compression efficiency on pure html:
 
 - L0: 2.1 MB (original without compression)
 - L1: 692 kB
@@ -254,7 +255,7 @@ Quick note on compression efficiency on pure html:
 ## Statistics
 
 You can access PiProxy statistics on any domain it serves under `/piproxy`.  
-Example: <https://test.example.com>
+Example: <https://test.example.com/piproxy>
 
 ### Advanced queries
 
