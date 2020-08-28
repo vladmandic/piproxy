@@ -2,6 +2,10 @@
 
 ### **origin/HEAD** 7/22/2020 cyan00@gmail.com
 
+- updated docs
+
+- monitoring and stats improvements
+
 - updated
 
 ### **v1.0.17** 7/22/2020 cyan00@gmail.com

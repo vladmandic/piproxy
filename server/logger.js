@@ -20,11 +20,18 @@ function parse(req, res) {
   return obj;
 }
 
+function exclude(req, res) {
+  if ((res.statusCode === 404) && (req.url.endsWith('.map'))) return true;
+  return false;
+}
+
 function logger(req, res) {
+  let record = {};
+  if (exclude(req, res)) return record;
   const obj = parse(req, res);
   const geoDetails = obj.geo.country ? `Geo:'${obj.geo.continent}/${obj.geo.country}/${obj.geo.city}' ASN:'${obj.geo.asn}' Loc:${obj.geo.lat},${obj.geo.lon}` : '';
   log.data(`${req.method}/${req.socket.alpnProtocol || req.httpVersion} Code:`, res.statusCode, `${obj.client} From:${obj.ip} Length:`, obj.size, `Agent:${obj.agent} Device:${obj.device} ${geoDetails}`);
-  const record = {
+  record = {
     timestamp: new Date(),
     method: req.method,
     protocol: (req.socket.alpnProtocol || req.httpVersion),
@@ -50,7 +57,7 @@ function logger(req, res) {
     duration: Math.trunc(parseFloat(res.performance) / 1000000) || 0,
   };
   if (global.db) global.db.insert(record);
-  return obj;
+  return record;
 }
 
 module.exports = logger;

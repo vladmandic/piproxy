@@ -70,7 +70,7 @@ global.config = {
       directives: {
         'default-src': ["'self'"],
         'img-src': ["'self'", 'data:', 'http:', 'https:'],
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https:'],
         'style-src': ["'self'", 'https:', "'unsafe-inline'"],
         'connect-src': ["'self'", 'http:', 'https:'],
         'upgrade-insecure-requests': [],
