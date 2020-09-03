@@ -87,7 +87,7 @@ async function html(url) {
       <meta name="Description" content="PiProxy Statistics">
       <meta name="viewport" content="width=device-width, initial-scale=0.4, minimum-scale=0.1, maximum-scale=2.0, shrink-to-fit=yes, user-scalable=yes">
       <meta name="theme-color" content="#555555"/>
-      <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     </head>
     <body style="background: black; margin: 0; padding: 0; color: #ebebeb; font-family: sans-serif">
       <div style="display: block; margin: 10px">

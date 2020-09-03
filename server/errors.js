@@ -27,12 +27,12 @@ function get404(obj) {
       <meta name="Description" content="PiProxy Error">
       <meta name="viewport" content="width=device-width, initial-scale=0.4, minimum-scale=0.1, maximum-scale=2.0, shrink-to-fit=yes, user-scalable=yes">
       <meta name="theme-color" content="#555555"/>
-      <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     </head>
-    <body style="background: black; padding: 40px; color: #ebebeb; line-height: 2rem; font-family: sans-serif">
+    <body style="background: black; padding: 40px; color: #ebebeb; line-height: 2rem; font-family: sans-serif;">
       <div style="display: block; margin-left: 20px; width: 80%">
         <div style="font-size: 1.3rem; margin-top: 20px">
-          <font color="lightcoral"><b>Error 404</b> for URL: <b>${obj.client}</b><br>
+          <font color="lightcoral"><b>Error 404</b> for URL: <b>${obj.scheme}://${obj.host}${obj.url}</b><br>
           The requested URL was not found on this server. That's it.</font><br>
         </div>
         <div style="font-size: 1.0rem; margin-top: 30px">

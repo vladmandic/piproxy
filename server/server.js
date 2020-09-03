@@ -77,6 +77,7 @@ function findTarget(req) {
           break;
         case 404:
           writeHeaders(input, output, false);
+          output.setHeader('content-security-policy', "default-src 'self' 'unsafe-inline'");
           output.end(errors.get404(obj));
           break;
         default:
