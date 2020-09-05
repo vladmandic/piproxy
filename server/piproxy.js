@@ -51,7 +51,7 @@ global.config = {
     interval: 10,
     tokens: 500,
   },
-  brotli: 5,
+  compress: 0,
   db: 'piproxy.db',
   monitor: true,
   geoIP: {

@@ -1,6 +1,10 @@
 # PiProxy Change Log
 
-### **origin/HEAD** 7/28/2020 cyan00@gmail.com
+### **origin/HEAD** 8/3/2020 cyan00@gmail.com
+
+### **v1.0.19** 8/3/2020 cyan00@gmail.com
+
+### **v1.0.18** 7/28/2020 cyan00@gmail.com
 
 - excluded js map files
 

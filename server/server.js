@@ -34,22 +34,19 @@ function redirectSecure() {
 }
 
 function writeHeaders(input, output, compress) {
-  for (const [key, val] of Object.entries(input.headers)) {
-    output.setHeader(key, val);
-    // input.removeHeader(key);
-  }
+  for (const [key, val] of Object.entries(input.headers)) output.setHeader(key, val);
   output.setHeader('x-powered-by', 'PiProxy');
-  if (compress) output.setHeader('content-encoding', 'br');
+  if (compress) output.setHeader('content-encoding', 'br'); // gzip
 }
 
 function writeData(_req, output, input) {
   const encoding = (input.headers['content-encoding'] || '').length > 0; // is content already compressed?
-  const accept = _req.headers['accept-encoding'] ? _req.headers['accept-encoding'].includes('br') : false; // does target accept compressed data?
-  const compress = global.config.brotli && (global.config.brotli > 0) && !encoding && accept; // is compression enabled, data uncompressed and target accepts compression?
-  writeHeaders(input, output, compress); // copy all headers from original response
-  const brotli = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: global.config.brotli } });
-  if (compress) input.pipe(brotli).pipe(output); // compress data
-  else input.pipe(output); // don't compress data;
+  const accept = _req.headers['accept-encoding'] ? _req.headers['accept-encoding'].includes('br') : false; // does target accept compressed data? // gzip
+  const enabled = global.config.compress && (global.config.compress > 0) && !encoding && accept; // is compression enabled, data uncompressed and target accepts compression?
+  writeHeaders(input, output, enabled); // copy all headers from original response
+  const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: global.config.compress } }); // zlib.createGzip({ level: global.config.compress });
+  if (!enabled) input.pipe(output); // don't compress data
+  else input.pipe(compress).pipe(output); // compress data
 }
 
 function findTarget(req) {
