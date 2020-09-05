@@ -90,10 +90,11 @@ global.config = {
     interval: 10,
     tokens: 500,
   },
-  // if present, piproxy will compress all responses with specific brotli compression level before sending them out
+  // if present, piproxy will compress all responses with specific compression level before sending them out
   // exception is if client does not understand enhanced compression or output has already been compressed
+  // supported are gzip and brotli with brotli as default
   // set to 0 to disable compression
-  brotli: 5,
+  compress: 5,
   // log to database in addition to a log file
   db: 'piproxy.db',
   // use geoip reverse lookups to locate requests

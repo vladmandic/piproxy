@@ -1,5 +1,9 @@
 # PiProxy Change Log
 
+### **v1.0.20** 8/4/2020 cyan00@gmail.com
+
+- add gzip as alternative
+
 ### **origin/HEAD** 8/3/2020 cyan00@gmail.com
 
 ### **v1.0.19** 8/3/2020 cyan00@gmail.com
