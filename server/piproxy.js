@@ -51,7 +51,7 @@ global.config = {
     interval: 10,
     tokens: 500,
   },
-  compress: 0,
+  compress: 5,
   db: 'piproxy.db',
   monitor: true,
   geoIP: {

@@ -34,7 +34,10 @@ function redirectSecure() {
 }
 
 function writeHeaders(input, output, compress) {
-  for (const [key, val] of Object.entries(input.headers)) output.setHeader(key, val);
+  for (const [key, val] of Object.entries(input.headers)) {
+    if (compress && key.toLowerCase().includes('content-length')) output.setHeader('content-size', val);
+    else output.setHeader(key, val);
+  }
   output.setHeader('x-powered-by', 'PiProxy');
   if (compress) output.setHeader('content-encoding', 'br'); // gzip
 }
@@ -118,6 +121,8 @@ async function init(ssl) {
   log.info('Log database:', path.resolve(global.config.db));
   global.db = nedb.create({ filename: path.resolve(global.config.db), inMemoryOnly: false, timestampData: false, autoload: false });
   await global.db.loadDatabase();
+
+  log.info('Compression:', global.config.compress);
 
   // Start proxy web server
   app = await middleware.init();
