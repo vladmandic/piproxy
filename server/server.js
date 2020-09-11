@@ -13,6 +13,8 @@ const predefined = require('./predefined.js');
 const proxy = require('./proxy.js');
 
 let app;
+let server;
+let ssl;
 
 function errorHandler(err, req, res) {
   if (err) {
@@ -25,12 +27,12 @@ function errorHandler(err, req, res) {
 
 function redirectSecure() {
   if (!global.config.redirectHTTP) return;
-  const server = http.createServer((req, res) => {
+  const redirector = http.createServer((req, res) => {
     res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
     res.end();
     logger(req, res);
   });
-  server.listen(80);
+  redirector.listen(80);
 }
 
 function writeHeaders(input, output, compress) {
@@ -98,11 +100,11 @@ function dropPriviledges() {
   }
 }
 
-function startServer(ssl) {
+function startServer() {
 // Start Proxy web server
   global.config.http2.key = fs.readFileSync(path.join(__dirname, ssl.Key));
   global.config.http2.cert = fs.readFileSync(path.join(__dirname, ssl.Crt));
-  const server = http2.createSecureServer(global.config.http2);
+  server = http2.createSecureServer(global.config.http2);
   server.on('listening', () => {
     log.state('Proxy listening:', server.address());
     dropPriviledges();
@@ -113,7 +115,17 @@ function startServer(ssl) {
   server.listen(global.config.http2.port);
 }
 
-async function init(ssl) {
+function restartServer() {
+  if (!server) {
+    log.warn('Server not started');
+    return;
+  }
+  log.info('Proxy restart requested');
+  server.close();
+  setTimeout(() => startServer(), 2000);
+}
+
+async function init(sslOptions) {
 // Redirect HTTP to HTTPS
   redirectSecure();
 
@@ -126,7 +138,8 @@ async function init(ssl) {
 
   // Start proxy web server
   app = await middleware.init();
-  startServer(ssl);
+  ssl = sslOptions;
+  startServer();
 
   // Log all redirect rules
   for (const rule of global.config.redirects) log.info(' Rule:', rule);
@@ -141,3 +154,4 @@ async function init(ssl) {
 
 exports.init = init;
 exports.logger = logger;
+exports.restart = restartServer;

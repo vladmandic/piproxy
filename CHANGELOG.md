@@ -1,6 +1,10 @@
 # PiProxy Change Log
 
-### **origin/HEAD** 8/4/2020 cyan00@gmail.com
+### **origin/HEAD** 8/5/2020 cyan00@gmail.com
+
+- fix firefox compression compatibility issue
+
+- update docs
 
 ### **v1.0.20** 8/4/2020 cyan00@gmail.com
 

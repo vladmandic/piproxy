@@ -100,11 +100,12 @@ async function main() {
   } else {
     ssl = global.config.ssl;
   }
-  await acme.monitorCert();
   // Load GeoIP DB
   await geoip.init();
   // Start actual redirector
   await server.init(ssl);
+  // Monitor SSL Certificates
+  await acme.monitorCert(server.restart);
   // Monitor target servers
   await monitor.start();
 }
