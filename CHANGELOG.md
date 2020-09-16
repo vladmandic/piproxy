@@ -1,6 +1,6 @@
 # PiGallery Change Log
 
-### **HEAD -> master** 2020/09/11 cyan00@gmail.com
+### **1.0.23** 2020/09/11 cyan00@gmail.com
 
 ### **1.0.22** 2020/09/11 cyan00@gmail.com
 - autorestart on ssl cert update

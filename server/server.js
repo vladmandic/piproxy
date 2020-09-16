@@ -18,7 +18,8 @@ let ssl;
 
 function errorHandler(err, req, res) {
   if (err) {
-    log.error('Proxy error', err.statusCode, err.code, err.address, err.port, err);
+    const client = `${req.headers[':scheme'] || (req.socket.encrypted ? 'https' : 'http')}://${req.headers[':authority'] || req.headers.host}${req.url}`;
+    log.error('Proxy error', client, err.statusCode, err.code, `${err.address}:${err.port}`);
     res.setHeader('proxy-error', err);
     if (err.statusCode) res.writeHead(err.statusCode, res.headers);
     res.end();
