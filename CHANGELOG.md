@@ -1,5 +1,9 @@
 # PiGallery Change Log
 
+### **1.1.2** 2020/09/16 cyan00@gmail.com
+
+### **1.1.1** 2020/09/16 cyan00@gmail.com
+
 ### **1.0.24** 2020/09/16 cyan00@gmail.com
 - improved error handler
 

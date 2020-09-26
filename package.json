@@ -5,9 +5,9 @@
   "main": "server/piproxy.js",
   "sideEffects": false,
   "scripts": {
-    "start": "node server/piproxy.js",
-    "setup": "./setup.js",
-    "lint": "eslint server/*.js *.json && depcheck --ignores='eslint-plugin-*,auditjs,npm-check-updates' && auditjs ossi --quiet"
+    "start": "node --unhandled-rejections=strict --pending-deprecation server/piproxy.js",
+    "setup": "node ./setup.js",
+    "lint": "eslint *.json *.js server"
   },
   "repository": {
     "type": "git",
@@ -35,9 +35,10 @@
     "node": "^12.0.0"
   },
   "dependencies": {
-    "@vladmandic/piacme": "^0.1.10",
-    "@vladmandic/pilogger": "^0.1.11",
+    "@vladmandic/piacme": "^0.1.14",
+    "@vladmandic/pilogger": "^0.2.6",
     "connect": "^3.7.0",
+    "esbuild": "^0.7.6",
     "helmet": "^4.1.1",
     "maxmind": "^4.1.4",
     "nedb-promises": "^4.0.4",
@@ -45,7 +46,7 @@
     "superagent": "^6.1.0"
   },
   "devDependencies": {
-    "eslint": "^7.8.1",
+    "eslint": "^7.9.0",
     "eslint-config-airbnb-base": "^14.2.0",
     "eslint-plugin-html": "^6.1.0",
     "eslint-plugin-import": "^2.22.0",
