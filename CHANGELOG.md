@@ -1,5 +1,9 @@
 # PiGallery Change Log
 
+### **1.1.4** 2020/10/28 mandic00@live.com
+
+### **1.1.3** 2020/09/26 mandic00@live.com
+
 ### **1.1.2** 2020/09/16 cyan00@gmail.com
 
 ### **1.1.1** 2020/09/16 cyan00@gmail.com
