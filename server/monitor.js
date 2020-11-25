@@ -63,7 +63,11 @@ async function test() {
   monitor();
 }
 
-if (!module.parent) test();
+try {
+  if (require.main === module) test();
+} catch {
+  //
+}
 
 exports.start = start;
 exports.get = monitor;

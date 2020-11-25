@@ -131,6 +131,10 @@ async function test() {
   // console.log(table(db));
 }
 
-if (!module.parent) test();
+try {
+  if (require.main === module) test();
+} catch {
+  //
+}
 
 exports.get = get;

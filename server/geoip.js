@@ -39,7 +39,6 @@ function get(addr) {
   try {
     const geo = geoCity.get(ip);
     const asn = geoASN.get(ip);
-    // if (!module.parent) console.log('Geo', geo, 'ASN', asn);
     loc.asn = asn.autonomous_system_organization;
     loc.continent = geo.continent ? geo.continent.code : 'unknown';
     loc.country = geo.country ? geo.country.iso_code : 'unknown';
@@ -56,7 +55,11 @@ async function test(ip) {
   log.info(ip, get(ip));
 }
 
-if (!module.parent) test(proc.argv[2]);
+try {
+  if (require.main === module) test(proc.argv[2]);
+} catch {
+  //
+}
 
 exports.get = get;
 exports.init = init;
