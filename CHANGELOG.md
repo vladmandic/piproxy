@@ -1,8 +1,10 @@
 # PiGallery Change Log
 
-### **HEAD -> master** 2020/11/03 mandic00@live.com
+### **1.1.6** 2020/11/25 mandic00@live.com
 
-### **tag: v2, origin/master, origin/HEAD** 2020/10/29 mandic00@live.com
+### **1.1.5** 2020/11/25 mandic00@live.com
+
+### **tag: v2** 2020/10/29 mandic00@live.com
 
 ### **1.1.4** 2020/10/28 mandic00@live.com
 
