@@ -43,8 +43,15 @@ global.config = {
   redirectHTTP: true, // redirect http to https
   redirects: [
     { url: 'pidash.ddns.net', target: 'localhost', port: '10000' },
+    { url: 'pidash.local', target: 'localhost', port: '10000' },
     { url: 'pigallery.ddns.net', target: 'localhost', port: '10010' },
-    { url: 'pimiami.ddns.net', target: 'localhost', port: '10020' },
+    { url: 'pigallery.local', target: 'localhost', port: '10010' },
+    { url: 'piclock.ddns.net', target: 'localhost', port: '10020' },
+    { url: 'piclock.local', target: 'localhost', port: '10020' },
+    { url: 'human.ddns.net', target: 'localhost', port: '10030' },
+    { url: 'human.local', target: 'localhost', port: '10030' },
+    { url: 'stocks.local', target: 'localhost', port: '10040' },
+    { url: 'pimiami.ddns.net', target: 'localhost', port: '10040' },
     { default: true, target: 'localhost', port: '10020' },
   ],
   limiter: {
