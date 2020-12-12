@@ -35,8 +35,8 @@
     "node": "^12.0.0"
   },
   "dependencies": {
-    "@vladmandic/piacme": "^0.1.17",
-    "@vladmandic/pilogger": "^0.2.9",
+    "@vladmandic/piacme": "^0.1.18",
+    "@vladmandic/pilogger": "^0.2.10",
     "connect": "^3.7.0",
     "esbuild": "^0.8.22",
     "helmet": "^4.2.0",
