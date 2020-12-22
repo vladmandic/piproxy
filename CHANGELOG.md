@@ -1,6 +1,8 @@
 # PiGallery Change Log
 
-### **HEAD -> master, origin/master, origin/HEAD** 2020/12/01 mandic00@live.com
+### **1.1.7** 2020/12/12 mandic00@live.com
+- port update
+- package update
 
 ### **1.1.6** 2020/11/25 mandic00@live.com
 

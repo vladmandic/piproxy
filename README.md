@@ -119,7 +119,7 @@ global.config = {
         'img-src': ["'self'", 'data:', 'http:', 'https:'],
         'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
         'style-src': ["'self'", 'https:', "'unsafe-inline'"],
-        'connect-src': ["'self'", 'http:', 'https:'],
+        'connect-src': ["'self'", 'http:', 'https:', 'data:'],
         'upgrade-insecure-requests': [],
       },
     },
