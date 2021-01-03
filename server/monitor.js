@@ -6,6 +6,7 @@ const timeout = 250;
 async function check(server) {
   return new Promise((resolve) => {
     const srcStatus = {};
+    // @ts-ignore
     const src = net.connect(global.config.http2.port, server.url);
     src.on('lookup', () => { srcStatus.lookup = true; });
     src.on('connect', () => { srcStatus.connect = true; });
@@ -33,6 +34,7 @@ async function check(server) {
 
 async function monitor() {
   const out = [];
+  // @ts-ignore
   for (const server of global.config.redirects) {
     const res = await check(server);
     out.push(res);
@@ -44,10 +46,12 @@ async function monitor() {
 
 async function start() {
   monitor();
+  // @ts-ignore
   if (global.config.monitor) setInterval(monitor, 5 * 60 * 1000);
 }
 
 async function test() {
+  // @ts-ignore
   global.config = {
     redirects: [
       { url: 'pidash.ddns.net', target: 'localhost', port: '10000' },

@@ -8,8 +8,11 @@ let geoASN;
 
 async function init() {
   try {
+    // @ts-ignore
     if (fs.existsSync(global.config.geoIP.city) && fs.existsSync(global.config.geoIP.asn)) {
+      // @ts-ignore
       geoCity = await maxmind.open(global.config.geoIP.city);
+      // @ts-ignore
       geoASN = await maxmind.open(global.config.geoIP.asn);
       log.state('GeoIP databases loaded');
     }

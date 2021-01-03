@@ -54,7 +54,7 @@ async function request({ req, socket, res = socket, head, proxyName }, onReq, on
   }
   let callback;
   const promise = new Promise((resolve, reject) => {
-    callback = (err) => (err ? reject(err) : resolve());
+    callback = (err) => (err ? reject(err) : resolve(true));
   });
   req[kRes] = res;
   req[kProxyReq] = proxyReq;
@@ -358,7 +358,7 @@ function process(proxy) {
                 else if (promiseOrReq.abort) resolve(promiseOrReq);
                 else throw new Error('onReq must return a promise or a request object');
               } else {
-                resolve();
+                resolve(true);
               }
             });
           }

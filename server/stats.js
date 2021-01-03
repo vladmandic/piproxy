@@ -37,6 +37,7 @@ function table(input) {
 }
 
 async function html(url) {
+  // @ts-ignore
   if (!global.db) return '';
   const stat = {
     ips: [],
@@ -55,6 +56,7 @@ async function html(url) {
   } catch { /**/ }
   let db = [];
   try {
+    // @ts-ignore
     db = await global.db.find(query).sort({ timestamp: -1 });
   } catch { /**/ }
   if (db.length <= 0) return '';
@@ -62,13 +64,21 @@ async function html(url) {
   for (const rec of db) {
     // if (rec.ip && filtered.includes(rec.ip.toString().trim())) continue;
     i += 1;
+    // @ts-ignore
     if (rec.ip && !stat.ips.includes(rec.ip)) stat.ips.push(rec.ip);
+    // @ts-ignore
     if (rec.asn && !stat.asn.includes(rec.asn)) stat.asn.push(rec.asn);
+    // @ts-ignore
     if (rec.continent && !stat.continent.includes(rec.continent)) stat.continent.push(rec.continent);
+    // @ts-ignore
     if (rec.country && (rec.country !== 'unknown') && !stat.country.includes(rec.country)) stat.country.push(rec.country);
+    // @ts-ignore
     if (rec.agent && !stat.agent.includes(rec.agent)) stat.agent.push(rec.agent);
+    // @ts-ignore
     if (rec.device && !stat.device.includes(rec.device)) stat.device.push(rec.device);
+    // @ts-ignore
     if (i < limit) stat.last.push(rec); // last += str(rec);
+    // @ts-ignore
     if (rec.status >= 400) stat.errors.push(rec); // errors += str(rec);
     if (stat.errors.length > limit) stat.errors.length = limit;
   }
@@ -120,8 +130,11 @@ async function get(req, res, next) {
 }
 
 async function test() {
+  // @ts-ignore
   if (!global.db) {
+    // @ts-ignore
     global.db = nedb.create({ filename: 'piproxy.db', inMemoryOnly: false, timestampData: false, autoload: false });
+    // @ts-ignore
     await global.db.loadDatabase();
   }
   // await global.db.remove({ ip: '::ffff:192.168.0.1' }, { multi: true });

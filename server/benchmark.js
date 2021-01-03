@@ -6,7 +6,7 @@ const options = {
   http2: {
     target: 'https://pigallery.ddns.net',
     ':path': '/',
-    rejectUnauthorized: false,
+    // rejectUnauthorized: false,
   },
   https: {
     hostname: 'localhost',
@@ -52,7 +52,7 @@ async function main() {
     if (ok) count += 1;
   }
   const t1 = process.hrtime.bigint();
-  const ms = Math.trunc(parseFloat(t1 - t0) / 1000000);
+  const ms = Math.trunc(parseFloat((t1 - t0).toString()) / 1000000);
   const total = Math.round(1000 * options.tries / ms);
   const rate = Math.round(1000 * count / ms);
   log.info(`Completed in ${ms.toLocaleString()}ms with total ${options.tries} / ${total.toLocaleString()} success ${count} / ${rate.toLocaleString()} requests/second`);

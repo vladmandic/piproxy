@@ -8,6 +8,7 @@ const git = simpleGit();
 async function update(f) {
   let text = '# PiGallery Change Log\n';
   const all = await git.log();
+  // @ts-ignore
   const log = all.all.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
 
   let previous = '';
@@ -16,7 +17,7 @@ async function update(f) {
     if ((l.refs !== '') || msg.match(/^[0-9].[0-9].[0-9]/)) {
       // const dt = moment(l.date).format('YYYY/MM/DD');
       const d = new Date(l.date);
-      const dt = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, 0)}/${d.getDate().toString().padStart(2, 0)}`;
+      const dt = `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getDate().toString().padStart(2, '0')}`;
       const ver = msg.match(/[0-9].[0-9].[0-9]/) ? msg : l.refs;
       text += `\n### **${ver}** ${dt} ${l.author_email}\n`;
     } else if ((msg.length > 2) && !msg.startsWith('update') && (previous !== msg)) {

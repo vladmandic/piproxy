@@ -56,6 +56,7 @@ function logger(req, res) {
     jwt: obj.jwt,
     duration: Math.trunc(parseFloat(res.performance) / 1000000) || 0,
   };
+  // @ts-ignore
   if (global.db) global.db.insert(record);
   return record;
 }

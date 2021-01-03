@@ -27,6 +27,7 @@ function errorHandler(err, req, res) {
 }
 
 function redirectSecure() {
+  // @ts-ignore
   if (!global.config.redirectHTTP) return;
   const redirector = http.createServer((req, res) => {
     res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
@@ -48,8 +49,10 @@ function writeHeaders(input, output, compress) {
 function writeData(_req, output, input) {
   const encoding = (input.headers['content-encoding'] || '').length > 0; // is content already compressed?
   const accept = _req.headers['accept-encoding'] ? _req.headers['accept-encoding'].includes('br') : false; // does target accept compressed data? // gzip
+  // @ts-ignore
   const enabled = global.config.compress && (global.config.compress > 0) && !encoding && accept; // is compression enabled, data uncompressed and target accepts compression?
   writeHeaders(input, output, enabled); // copy all headers from original response
+  // @ts-ignore
   const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: global.config.compress } }); // zlib.createGzip({ level: global.config.compress });
   if (!enabled) input.pipe(output); // don't compress data
   else input.pipe(compress).pipe(output); // compress data
@@ -57,6 +60,7 @@ function writeData(_req, output, input) {
 
 function findTarget(req) {
   const url = `${req.headers[':scheme']}://${req.headers[':authority']}${req.headers[':path']}`;
+  // @ts-ignore
   const tgt = (global.config.redirects.find((a) => url.match(a.url))) || (global.config.redirects.find((a) => a.default === true));
   // log.data('Proxy rule matched:', url, tgt);
   const t0 = process.hrtime.bigint();
@@ -93,7 +97,7 @@ function findTarget(req) {
 }
 
 function dropPriviledges() {
-  const uid = parseInt(process.env.SUDO_UID, 10);
+  const uid = parseInt(process.env.SUDO_UID || '', 10);
   if (uid) {
     process.setuid(uid);
     log.state('Reducing runtime priviledges');
@@ -103,8 +107,11 @@ function dropPriviledges() {
 
 function startServer() {
 // Start Proxy web server
+  // @ts-ignore
   global.config.http2.key = fs.readFileSync(path.join(__dirname, ssl.Key));
+  // @ts-ignore
   global.config.http2.cert = fs.readFileSync(path.join(__dirname, ssl.Crt));
+  // @ts-ignore
   server = http2.createSecureServer(global.config.http2);
   server.on('listening', () => {
     log.state('Proxy listening:', server.address());
@@ -113,6 +120,7 @@ function startServer() {
   server.on('error', (err) => log.error('Proxy error', err.message || err));
   server.on('close', () => log.state('Proxy closed'));
   server.on('request', app);
+  // @ts-ignore
   server.listen(global.config.http2.port);
 }
 
@@ -131,10 +139,14 @@ async function init(sslOptions) {
   redirectSecure();
 
   // Load log database
+  // @ts-ignore
   log.info('Log database:', path.resolve(global.config.db));
+  // @ts-ignore
   global.db = nedb.create({ filename: path.resolve(global.config.db), inMemoryOnly: false, timestampData: false, autoload: false });
+  // @ts-ignore
   await global.db.loadDatabase();
 
+  // @ts-ignore
   log.info('Compression:', global.config.compress);
 
   // Start proxy web server
@@ -143,6 +155,7 @@ async function init(sslOptions) {
   startServer();
 
   // Log all redirect rules
+  // @ts-ignore
   for (const rule of global.config.redirects) log.info(' Rule:', rule);
 
   // Actual proxy calls

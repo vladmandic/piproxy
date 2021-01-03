@@ -1,5 +1,9 @@
 # PiGallery Change Log
 
+### **HEAD -> master, origin/master, origin/HEAD** 2020/12/22 mandic00@live.com
+- merge pull request #3 from vladmandic/dependabot/npm_and_yarn/ini-1.3.8
+- bump ini from 1.3.5 to 1.3.8
+
 ### **1.1.7** 2020/12/12 mandic00@live.com
 - port update
 - package update

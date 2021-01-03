@@ -11,9 +11,10 @@ const server = require('./server.js');
 let secrets = {};
 if (fs.existsSync('./cert/secrets.json')) { // create private secrets file as required
   const blob = fs.readFileSync('./cert/secrets.json');
-  secrets = JSON.parse(blob);
+  secrets = JSON.parse(blob.toString());
 }
 
+// @ts-ignore
 global.config = {
   logFile: 'piproxy.log',
   noip: {
@@ -93,18 +94,23 @@ global.config = {
 
 async function main() {
   // Log startup
+  // @ts-ignore
   log.configure({ logFile: global.config.logFile });
   log.header();
   // Update changelog from git repository
   await changelog.update('CHANGELOG.md');
   // update NoIP
+  // @ts-ignore
   await noip.update(global.config.noip);
   // Check & Update SSL Certificate
   let ssl = {};
+  // @ts-ignore
   if (global.config.acme && global.config.acme.application) {
+    // @ts-ignore
     await acme.init(global.config.acme);
     ssl = await acme.getCert();
   } else {
+    // @ts-ignore
     ssl = global.config.ssl;
   }
   // Load GeoIP DB
