@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/piproxy",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "PiProxy: NodeJS Web Proxy",
   "main": "server/piproxy.js",
   "sideEffects": false,
@@ -35,18 +35,18 @@
     "node": "^12.0.0"
   },
   "dependencies": {
-    "@vladmandic/piacme": "^0.1.18",
-    "@vladmandic/pilogger": "^0.2.10",
+    "@vladmandic/piacme": "^0.1.19",
+    "@vladmandic/pilogger": "^0.2.11",
     "connect": "^3.7.0",
-    "esbuild": "^0.8.23",
-    "helmet": "^4.2.0",
+    "esbuild": "^0.8.29",
+    "helmet": "^4.3.1",
     "maxmind": "^4.3.1",
     "nedb-promises": "^4.1.0",
-    "simple-git": "^2.29.0",
+    "simple-git": "^2.31.0",
     "superagent": "^6.1.0"
   },
   "devDependencies": {
-    "eslint": "^7.15.0",
+    "eslint": "^7.17.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-html": "^6.1.1",
     "eslint-plugin-import": "^2.22.1",
