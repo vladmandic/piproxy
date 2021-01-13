@@ -1,6 +1,9 @@
 # PiGallery Change Log
 
-### **HEAD -> master, origin/master, origin/HEAD** 2020/12/22 mandic00@live.com
+### **HEAD -> master, origin/master, origin/HEAD** 2021/01/03 mandic00@live.com
+
+### **1.1.8** 2021/01/03 mandic00@live.com
+- merge branch 'master' of https://github.com/vladmandic/piproxy
 - merge pull request #3 from vladmandic/dependabot/npm_and_yarn/ini-1.3.8
 - bump ini from 1.3.5 to 1.3.8
 

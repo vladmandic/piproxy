@@ -78,9 +78,10 @@ global.config = {
       directives: {
         'default-src': ["'self'"],
         'img-src': ["'self'", 'data:', 'http:', 'https:'],
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https:'],
+        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https:', 'blob:'],
         'style-src': ["'self'", 'https:', "'unsafe-inline'"],
         'connect-src': ["'self'", 'http:', 'https:', 'data:'],
+        'worker-src': ["'self'", 'blob:', 'https:'],
         'upgrade-insecure-requests': [],
       },
     },
