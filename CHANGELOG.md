@@ -1,6 +1,7 @@
 # PiGallery Change Log
 
-### **HEAD -> master, origin/master, origin/HEAD** 2021/01/03 mandic00@live.com
+### **HEAD -> master, origin/master, origin/HEAD** 2021/01/13 mandic00@live.com
+- strict linting
 
 ### **1.1.8** 2021/01/03 mandic00@live.com
 - merge branch 'master' of https://github.com/vladmandic/piproxy

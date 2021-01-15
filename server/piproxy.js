@@ -76,12 +76,12 @@ global.config = {
     expectCt: { enforce: true },
     contentSecurityPolicy: {
       directives: {
-        'default-src': ["'self'"],
-        'img-src': ["'self'", 'data:', 'http:', 'https:'],
-        'script-src': ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https:', 'blob:'],
-        'style-src': ["'self'", 'https:', "'unsafe-inline'"],
-        'connect-src': ["'self'", 'http:', 'https:', 'data:'],
-        'worker-src': ["'self'", 'blob:', 'https:'],
+        defaultSrc: ["'self'"],
+        imgSrc: ["'self'", 'data:', 'http:', 'https:'],
+        scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https:', 'blob:'],
+        styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+        connectSrc: ["'self'", 'http:', 'https:', 'data:'],
+        workerSrc: ["'self'", 'blob:', 'https:'],
         'upgrade-insecure-requests': [],
       },
     },
