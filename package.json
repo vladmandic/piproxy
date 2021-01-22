@@ -36,23 +36,23 @@
   },
   "dependencies": {
     "@vladmandic/piacme": "^0.1.19",
-    "@vladmandic/pilogger": "^0.2.11",
+    "@vladmandic/pilogger": "^0.2.12",
     "connect": "^3.7.0",
-    "esbuild": "^0.8.29",
-    "helmet": "^4.3.1",
+    "esbuild": "^0.8.34",
+    "helmet": "^4.4.1",
     "maxmind": "^4.3.1",
-    "nedb-promises": "^4.1.0",
+    "nedb-promises": "^4.1.1",
     "simple-git": "^2.31.0",
     "superagent": "^6.1.0"
   },
   "devDependencies": {
-    "eslint": "^7.17.0",
+    "eslint": "^7.18.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-html": "^6.1.1",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "npm-check-updates": "^10.2.5"
+    "npm-check-updates": "^10.3.1"
   }
 }

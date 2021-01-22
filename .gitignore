@@ -1,6 +1,6 @@
 node_modules
-piproxy.log
 cert/**
+logs
 setup.json
 piproxy*.db
 piproxy*.log
