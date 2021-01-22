@@ -35,7 +35,7 @@
     "node": "^12.0.0"
   },
   "dependencies": {
-    "@vladmandic/piacme": "^0.1.19",
+    "@vladmandic/piacme": "^0.1.21",
     "@vladmandic/pilogger": "^0.2.12",
     "connect": "^3.7.0",
     "esbuild": "^0.8.34",
@@ -53,6 +53,6 @@
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "npm-check-updates": "^10.3.1"
+    "npm-check-updates": "^11.0.2"
   }
 }
