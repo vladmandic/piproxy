@@ -35,10 +35,10 @@
     "node": "^12.0.0"
   },
   "dependencies": {
-    "@vladmandic/piacme": "^0.1.21",
-    "@vladmandic/pilogger": "^0.2.12",
+    "@vladmandic/piacme": "^0.1.22",
+    "@vladmandic/pilogger": "^0.2.13",
     "connect": "^3.7.0",
-    "esbuild": "^0.8.34",
+    "esbuild": "^0.8.36",
     "helmet": "^4.4.1",
     "maxmind": "^4.3.1",
     "nedb-promises": "^4.1.1",
@@ -53,6 +53,6 @@
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
-    "npm-check-updates": "^11.0.2"
+    "npm-check-updates": "^11.1.1"
   }
 }
