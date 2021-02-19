@@ -20,13 +20,12 @@ function get404(obj) {
     <!DOCTYPE html>
     <html lang="en">
     <head>
+      <meta charset="utf-8">
       <title>PiProxy Error</title>
       <meta http-equiv="content-type">
-      <meta content="text/html">
-      <meta charset="UTF-8">
+      <meta content="text/html; charset=utf-8">
       <meta name="Description" content="PiProxy Error">
-      <meta name="viewport" content="width=device-width, initial-scale=0.4, minimum-scale=0.1, maximum-scale=2.0, shrink-to-fit=yes, user-scalable=yes">
-      <meta name="theme-color" content="#555555"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
       <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     </head>
     <body style="background: black; padding: 40px; color: #ebebeb; line-height: 2rem; font-family: sans-serif;">

@@ -1,3 +1,6 @@
+// https://github.com/du5/geoip
+// https://github.com/clashdev/geolite.clash.dev
+
 const fs = require('fs');
 const maxmind = require('maxmind');
 const log = require('@vladmandic/pilogger');

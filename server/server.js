@@ -42,7 +42,8 @@ function writeHeaders(input, output, compress) {
     if (compress && key.toLowerCase().includes('content-length')) output.setHeader('content-size', val);
     else output.setHeader(key, val);
   }
-  output.setHeader('x-powered-by', 'PiProxy');
+  // output.setHeader('x-powered-by', 'PiProxy');
+  output.setHeader('x-content-type-options', 'nosniff');
   if (compress) output.setHeader('content-encoding', 'br'); // gzip
 }
 

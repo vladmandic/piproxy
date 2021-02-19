@@ -42,7 +42,7 @@ async function get(req, res, next) {
     next();
     return;
   }
-  res.writeHead(status, { 'Content-Type': `'${type}'`, 'Cache-Control': 'no-cache', 'X-Powered-By': `NodeJS/${process.version}` });
+  res.writeHead(status, { 'Content-Type': `'${type}'`, 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' });
   logger(req, res);
   res.end(html, 'utf-8');
 }

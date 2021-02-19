@@ -90,13 +90,11 @@ async function html(url) {
   const text = `<!DOCTYPE html>
     <html lang="en">
     <head>
+      <meta charset="utf-8">
       <title>PiProxy Statistics</title>
       <meta http-equiv="content-type">
-      <meta content="text/html">
-      <meta charset="UTF-8">
       <meta name="Description" content="PiProxy Statistics">
-      <meta name="viewport" content="width=device-width, initial-scale=0.4, minimum-scale=0.1, maximum-scale=2.0, shrink-to-fit=yes, user-scalable=yes">
-      <meta name="theme-color" content="#555555"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=yes">
       <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     </head>
     <body style="background: black; margin: 0; padding: 0; color: #ebebeb; font-family: sans-serif">
@@ -123,9 +121,9 @@ async function get(req, res, next) {
     next();
     return;
   }
-  const text = await html(req.url);
-  res.writeHead(200, { 'Content-Type': 'text/html', 'Cache-Control': 'no-cache', 'Content-Length': `${text.length}`, 'X-Powered-By': `NodeJS/${process.version}` });
-  res.end(text, 'utf-8');
+  const body = await html(req.url);
+  res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff', 'Content-Length': `${body.length}` });
+  res.end(body, 'utf-8');
   logger(req, res);
 }
 

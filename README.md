@@ -253,6 +253,20 @@ Example of compression efficiency on pure html:
 - L5: 516 kB
 - L9: 494 kB
 
+## GeoIP
+
+GeoIP databases are not included in the package and should be provided by user.
+Once databases are available, they can be specified in the configuration:
+
+```js
+  // use geoip reverse lookups to locate requests
+  // databases can be obtained for free from maxmind at <https://dev.maxmind.com/geoip/geoip2/geolite2/>
+  geoIP: {
+    city: './geoip/GeoLite2-City.mmdb',
+    asn: './geoip/GeoLite2-ASN.mmdb',
+  },
+```
+
 ## Statistics
 
 You can access PiProxy statistics on any domain it serves under `/piproxy`.  

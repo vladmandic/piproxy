@@ -4,3 +4,4 @@ logs
 setup.json
 piproxy*.db
 piproxy*.log
+geoip/**

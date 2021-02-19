@@ -1,6 +1,14 @@
 # PiGallery Change Log
 
-### **HEAD -> master, origin/master, origin/HEAD** 2021/01/15 mandic00@live.com
+### **HEAD -> master** 2021/02/10 mandic00@live.com
+
+### **1.1.12** 2021/02/06 mandic00@live.com
+
+### **1.1.11** 2021/01/29 mandic00@live.com
+
+### **1.1.10** 2021/01/22 mandic00@live.com
+
+### **1.1.9** 2021/01/22 mandic00@live.com
 - strict linting
 
 ### **1.1.8** 2021/01/03 mandic00@live.com

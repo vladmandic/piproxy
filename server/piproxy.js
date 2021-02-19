@@ -67,7 +67,7 @@ global.config = {
     asn: './geoip/GeoLite2-ASN.mmdb',
   },
   helmet: {
-    frameguard: { action: 'deny' },
+    frameguard: false,
     xssFilter: false,
     dnsPrefetchControl: { allow: 'true' },
     noSniff: false,
@@ -82,6 +82,7 @@ global.config = {
         styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
         connectSrc: ["'self'", 'http:', 'https:', 'data:'],
         workerSrc: ["'self'", 'blob:', 'https:'],
+        // frameAncestors: ['none'],
         'upgrade-insecure-requests': [],
       },
     },
