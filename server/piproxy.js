@@ -111,18 +111,19 @@ async function main() {
     // @ts-ignore
     await acme.init(global.config.acme);
     ssl = await acme.getCert();
+    log.info('SSL details', ssl);
   } else {
     // @ts-ignore
     ssl = global.config.ssl;
   }
   // Load GeoIP DB
-  await geoip.init();
+  geoip.init();
   // Start actual redirector
-  await server.init(ssl);
+  server.init(ssl);
   // Monitor SSL Certificates
-  await acme.monitorCert(server.restart);
+  acme.monitorCert(server.restart);
   // Monitor target servers
-  await monitor.start();
+  monitor.start();
 }
 
 main();
