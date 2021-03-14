@@ -38,21 +38,20 @@
     "@vladmandic/piacme": "^0.1.26",
     "@vladmandic/pilogger": "^0.2.14",
     "connect": "^3.7.0",
-    "esbuild": "^0.8.49",
     "helmet": "^4.4.1",
     "maxmind": "^4.3.1",
     "nedb-promises": "^4.1.1",
-    "simple-git": "^2.35.1",
+    "simple-git": "^2.36.2",
     "superagent": "^6.1.0"
   },
   "devDependencies": {
-    "eslint": "^7.20.0",
+    "eslint": "^7.22.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-html": "^6.1.1",
+    "eslint-plugin-html": "^6.1.2",
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-json": "^2.1.2",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.3.1",
-    "npm-check-updates": "^11.1.4"
+    "npm-check-updates": "^11.3.0"
   }
 }

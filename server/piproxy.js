@@ -77,6 +77,7 @@ global.config = {
     contentSecurityPolicy: {
       directives: {
         defaultSrc: ["'self'"],
+        fontSrc: ["'self'", 'http:', 'https:'],
         imgSrc: ["'self'", 'data:', 'http:', 'https:'],
         scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", 'https:', 'blob:'],
         styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
