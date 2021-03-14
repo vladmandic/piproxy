@@ -13,17 +13,16 @@
     "type": "git",
     "url": "git+https://github.com/vladmandic/piproxy.git"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "keywords": [
-    "nodejs",
     "proxy",
+    "reverse-proxy",
     "http2",
     "letsencrypt",
     "geoip",
+    "noip",
     "rate-limiter",
-    "brotli"
+    "brotli",
+    "nodejs"
   ],
   "author": "Vladimir Mandic <mandic00@live.com>",
   "license": "MIT",
