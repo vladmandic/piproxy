@@ -5,3 +5,4 @@ setup.json
 piproxy*.db
 piproxy*.log
 geoip/**
+pnpm-lock.yaml
