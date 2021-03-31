@@ -1,7 +1,7 @@
 {
   "name": "@vladmandic/piproxy",
   "version": "1.1.16",
-  "description": "PiProxy: NodeJS Web Proxy",
+  "description": "PiProxy: HTTP/HTTPS/HTTP2 Web Reverse Proxy in NodeJS",
   "main": "server/piproxy.js",
   "sideEffects": false,
   "scripts": {
@@ -34,8 +34,8 @@
     "node": "^12.0.0"
   },
   "dependencies": {
-    "@vladmandic/piacme": "^0.1.26",
-    "@vladmandic/pilogger": "^0.2.14",
+    "@vladmandic/piacme": "^0.1.27",
+    "@vladmandic/pilogger": "^0.2.15",
     "connect": "^3.7.0",
     "helmet": "^4.4.1",
     "maxmind": "^4.3.1",
@@ -44,7 +44,7 @@
     "superagent": "^6.1.0"
   },
   "devDependencies": {
-    "eslint": "^7.22.0",
+    "eslint": "^7.23.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-html": "^6.1.2",
     "eslint-plugin-import": "^2.22.1",

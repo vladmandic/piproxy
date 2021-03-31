@@ -1,4 +1,4 @@
-# PiProxy: NodeJS Web Reverse Proxy  
+# PiProxy: HTTP/HTTPS/HTTP2 Web Reverse Proxy in NodeJS
 
 ## Features
 
