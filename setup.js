@@ -20,7 +20,7 @@ async function exec(cmd, msg) {
         json = JSON.parse(`${stdout}${stderr}`);
       } catch { /**/ }
       const t1 = process.hrtime.bigint();
-      const ms = Math.trunc(parseFloat(t1 - t0) / 1000000);
+      const ms = Math.trunc(parseFloat((t1 - t0).toString()) / 1000000);
       if (msg) process.stdout.write(`\r${msg} completed in ${ms.toLocaleString()}ms\n`);
       resolve(json);
     });
@@ -39,25 +39,19 @@ async function main() {
     process.exit(1);
   }
 
-  const p = JSON.parse(fs.readFileSync('./package.json'));
+  const p = JSON.parse(fs.readFileSync('./package.json').toString());
   process.stdout.write(`${p.name} server v${p.version}\n`);
   process.stdout.write(`Platform=${process.platform} Arch=${process.arch} Node=${process.version}\n`);
   process.stdout.write('Project dependencies\n');
   process.stdout.write(` production: ${Object.keys(p.dependencies || {}).length}\n`);
   process.stdout.write(` development: ${Object.keys(p.devDependencies || {}).length}\n`);
   process.stdout.write(` optional: ${Object.keys(p.optionalDependencies || {}).length}\n`);
-  if (fs.existsSync(f)) npm = JSON.parse(fs.readFileSync(f));
+  if (fs.existsSync(f)) npm = JSON.parse(fs.readFileSync(f).toString());
 
   // npm install
   npm.installProd = await exec('npm install --only=prod --json', 'NPM install production modules');
   npm.installDev = await exec('npm install --only=dev --json', 'NPM install development modules');
   npm.installOpt = await exec('npm install --only=opt --json', 'NPM install optional modules');
-
-  // ncu upgrade
-  process.stdout.write('Skipping NCU force upgrade modules\n');
-  // eslint-disable-next-line node/no-unpublished-require
-  // const ncu = require('npm-check-updates'); // eariliest we can load it
-  // npm.ncu = await ncu.run({ jsonUpgraded: true, upgrade: true, packageManager: 'npm', silent: true });
 
   // npm optimize
   npm.update = await exec('npm update --depth=5 --json', 'NPM update modules');

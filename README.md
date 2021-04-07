@@ -1,4 +1,4 @@
-# PiProxy: HTTP/HTTPS/HTTP2 Web Reverse Proxy in NodeJS
+# PiProxy: Reverse Proxy in NodeJS for HTTP/HTTPS/HTTP2 with Automatic SSL Management, Compression, Security Enforcement and Rate Limiting
 
 ## Features
 
