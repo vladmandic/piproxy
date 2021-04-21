@@ -83,7 +83,7 @@ global.config = {
         styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
         connectSrc: ["'self'", 'http:', 'https:', 'data:'],
         workerSrc: ["'self'", 'blob:', 'https:'],
-        // frameAncestors: ['none'],
+        frameAncestors: ['self'],
         'upgrade-insecure-requests': [],
       },
     },
