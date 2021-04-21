@@ -38,64 +38,67 @@ function redirectSecure() {
 }
 
 function writeHeaders(input, output, compress) {
+  // some heads are in input and some are already present in output, but no longer in input
+  const tempHeaders = [...Object.entries(output.getHeaders())];
+  for (const key of Object.keys(output.getHeaders())) output.removeHeader(key);
   for (const [key, val] of Object.entries(input.headers)) {
     if (compress && key.toLowerCase().includes('content-length')) output.setHeader('content-size', val);
     else output.setHeader(key, val);
+    delete input.headers[key];
   }
+  // rewrite original headers
+  for (const header of tempHeaders) {
+    output.setHeader(header[0], header[1]);
+  }
+  if (!output.getHeader('content-type').startsWith('text/html')) output.removeHeader('content-security-policy');
   // output.setHeader('x-powered-by', 'PiProxy');
   output.setHeader('x-content-type-options', 'nosniff');
   if (compress) output.setHeader('content-encoding', 'br'); // gzip
 }
 
-function writeData(_req, output, input) {
+function writeData(req, input, output) {
   const encoding = (input.headers['content-encoding'] || '').length > 0; // is content already compressed?
-  const accept = _req.headers['accept-encoding'] ? _req.headers['accept-encoding'].includes('br') : false; // does target accept compressed data? // gzip
+  const accept = req.headers['accept-encoding'] ? req.headers['accept-encoding'].includes('br') : false; // does target accept compressed data? // gzip
   // @ts-ignore
-  const enabled = global.config.compress && (global.config.compress > 0) && !encoding && accept; // is compression enabled, data uncompressed and target accepts compression?
-  writeHeaders(input, output, enabled); // copy all headers from original response
+  const acceptCompress = global.config.compress && (global.config.compress > 0) && !encoding && accept; // is compression enabled, data uncompressed and target accepts compression?
+  writeHeaders(input, output, acceptCompress); // copy headers from original response
   // @ts-ignore
   const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: global.config.compress } }); // zlib.createGzip({ level: global.config.compress });
-  if (!enabled) input.pipe(output); // don't compress data
+  if (!acceptCompress) input.pipe(output); // don't compress data
   else input.pipe(compress).pipe(output); // compress data
+  return output;
 }
 
-function findTarget(req) {
-  const url = `${req.headers[':scheme']}://${req.headers[':authority']}${req.headers[':path']}`;
-  // @ts-ignore
-  const tgt = (global.config.redirects.find((a) => url.match(a.url))) || (global.config.redirects.find((a) => a.default === true));
-  // log.data('Proxy rule matched:', url, tgt);
-  const t0 = process.hrtime.bigint();
-  const res = {
-    hostname: tgt.target,
-    port: tgt.port,
-    onReq: (_req) => { // add headers to request going to target server
-      _req.headers['x-forwarded-for'] = _req.socket.remoteAddress;
-      _req.headers['x-forwarded-proto'] = _req.socket.encrypted ? 'https' : 'http';
-      _req.headers['x-forwarded-host'] = _req.headers[':authority'] || _req.headers.host;
-    },
-    onRes: (_req, output, input) => {
-      output.statusCode = input.statusCode;
-      const t1 = process.hrtime.bigint();
-      input.performance = t1 - t0;
-      output.performance = t1 - t0;
-      const obj = logger(_req, input);
-      switch (input.statusCode) {
-        case 200:
-          writeData(_req, output, input);
-          break;
-        case 404:
-          writeHeaders(input, output, false);
-          output.setHeader('content-security-policy', "default-src 'self' 'unsafe-inline'");
-          output.end(errors.get404(obj));
-          break;
-        default:
-          writeHeaders(input, output, false);
-          input.pipe(output);
-      }
-    },
-  };
-  return res;
-}
+const findTarget = {
+  timestamp: 0,
+  onReq: (input, output) => { // add headers to request going to target server
+    this.timestamp = process.hrtime.bigint();
+    const url = `${input.headers[':scheme']}://${input.headers[':authority']}${input.headers[':path']}`;
+    // @ts-ignore
+    const tgt = (global.config.redirects.find((a) => url.match(a.url))) || (global.config.redirects.find((a) => a.default === true));
+    output.hostname = tgt.target;
+    output.port = tgt.port;
+    output.headers['x-forwarded-for'] = input.socket.remoteAddress;
+    output.headers['x-forwarded-proto'] = input.socket.encrypted ? 'https' : 'http';
+    output.headers['x-forwarded-host'] = input.headers[':authority'] || input.headers.host;
+  },
+  onRes: (req, output, input) => {
+    output.statusCode = input.statusCode;
+    const t1 = process.hrtime.bigint();
+    input.performance = t1 - (this.timestamp || process.hrtime.bigint());
+    output.performance = t1 - (this.timestamp || process.hrtime.bigint());
+    const obj = logger(req, input);
+    switch (input.statusCode) {
+      case 404:
+        output.setHeader('content-security-policy', "default-src 'self' 'unsafe-inline'");
+        output.setHeader('content-type', 'text/html');
+        output.end(errors.get404(obj));
+        return output;
+      default:
+        return writeData(req, input, output);
+    }
+  },
+};
 
 function dropPriviledges() {
   const uid = parseInt(process.env.SUDO_UID || '', 10);
@@ -164,7 +167,7 @@ async function init(sslOptions) {
   // eslint-disable-next-line no-unused-vars
   app.use((req, res, next) => predefined.get(req, res, next));
   app.use((req, res, next) => stats.get(req, res, next));
-  app.use((req, res) => proxy.web(req, res, findTarget(req), errorHandler));
+  app.use((req, res) => proxy.web(req, res, findTarget, errorHandler));
 }
 
 exports.init = init;
