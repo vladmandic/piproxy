@@ -1,6 +1,9 @@
 # PiGallery Change Log
 
-### **HEAD -> master, origin/master, origin/HEAD** 2021/04/21 mandic00@live.com
+### **1.1.18** 2021/04/21 mandic00@live.com
+
+### **origin/master, origin/HEAD** 2021/04/21 mandic00@live.com
+- reimplement header handling
 
 ### **1.1.17** 2021/04/07 mandic00@live.com
 
