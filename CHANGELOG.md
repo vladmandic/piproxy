@@ -1,6 +1,8 @@
 # PiGallery Change Log
 
-### **HEAD -> master, tag: 1.1.8, origin/master, origin/HEAD** 2021/04/22 mandic00@live.com
+### **HEAD -> master, origin/master, origin/HEAD** 2021/06/07 mandic00@live.com
+
+### **tag: 1.1.8** 2021/04/22 mandic00@live.com
 
 ### **1.1.18** 2021/04/21 mandic00@live.com
 - fix frame-ancesor for iframes
