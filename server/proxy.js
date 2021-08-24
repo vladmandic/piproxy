@@ -132,14 +132,16 @@ function onComplete(err) {
 
 function onProxyConnect() {
   this[kConnected] = true;
-  if (this.method === 'GET' || this.method === 'HEAD' || this.method === 'OPTIONS') {
+  if (this['method'] === 'GET' || this['method'] === 'HEAD' || this['method'] === 'OPTIONS') {
     this[kReq].resume();
+    // @ts-ignore
     this.end();
   } else {
     this[kReq]
       .on('data', onReqData)
       .on('end', onReqEnd);
     this
+      // @ts-ignore
       .on('drain', onProxyReqDrain);
   }
 }

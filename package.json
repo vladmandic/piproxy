@@ -40,15 +40,15 @@
     "helmet": "^4.6.0",
     "maxmind": "^4.3.2",
     "nedb-promises": "^5.0.0",
-    "simple-git": "^2.41.2",
+    "simple-git": "^2.44.0",
     "superagent": "^6.1.0"
   },
   "devDependencies": {
-    "eslint": "^7.31.0",
+    "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-html": "^6.1.2",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-json": "^3.0.0",
+    "eslint-plugin-import": "^2.24.1",
+    "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^5.1.0"
   }

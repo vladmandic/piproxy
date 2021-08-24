@@ -20,6 +20,7 @@ const options = {
 
 function get(i) {
   return new Promise((resolve) => {
+    // eslint-disable-next-line no-unused-vars
     let data = [];
     const client = http2.connect(options.http2.target);
     const req = client.request(options.http2);
