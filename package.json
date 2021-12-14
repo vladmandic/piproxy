@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/piproxy",
-  "version": "1.1.20",
+  "version": "1.1.21",
   "description": "PiProxy: Reverse Proxy in NodeJS for HTTP/HTTPS/HTTP2 with SSL Certificate Management, Compression, Security Enforcement and Rate Limiting",
   "main": "server/piproxy.js",
   "sideEffects": false,
@@ -35,21 +35,21 @@
   },
   "dependencies": {
     "@vladmandic/piacme": "^0.1.29",
-    "@vladmandic/pilogger": "^0.3.3",
+    "@vladmandic/pilogger": "^0.3.5",
     "connect": "^3.7.0",
     "helmet": "^4.6.0",
     "maxmind": "^4.3.2",
-    "nedb-promises": "^5.0.1",
-    "simple-git": "^2.47.0",
+    "nedb-promises": "^5.0.2",
+    "simple-git": "^2.48.0",
     "superagent": "^6.1.0"
   },
   "devDependencies": {
-    "eslint": "^8.1.0",
-    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint": "^8.4.1",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-html": "^6.2.0",
-    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-import": "^2.25.3",
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.1"
+    "eslint-plugin-promise": "^5.2.0"
   }
 }
