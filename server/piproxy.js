@@ -52,7 +52,7 @@ global.config = {
     { url: 'human.ddns.net', target: 'localhost', port: '10030' },
     { url: 'human.local', target: 'localhost', port: '10030' },
     { url: 'stocks.local', target: 'localhost', port: '10040' },
-    { url: 'pimiami.ddns.net', target: 'localhost', port: '10040' },
+    { url: 'pimiami.ddns.net', target: 'localhost', port: '10020' },
     { default: true, target: 'localhost', port: '10020' },
   ],
   limiter: {
