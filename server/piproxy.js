@@ -53,6 +53,7 @@ global.config = {
     { url: 'human.local', target: 'localhost', port: '10030' },
     { url: 'stocks.local', target: 'localhost', port: '10040' },
     { url: 'pimiami.ddns.net', target: 'localhost', port: '10020' },
+    { url: 'pi.hole', target: 'localhost', port: '10050' },
     { default: true, target: 'localhost', port: '10020' },
   ],
   limiter: {
