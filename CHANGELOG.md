@@ -1,5 +1,7 @@
 # PiGallery Change Log
 
+### **1.1.23** 2022/05/25 mandic00@live.com
+
 ### **1.1.22** 2022/03/20 mandic00@live.com
 
 ### **1.1.21** 2021/12/14 mandic00@live.com
