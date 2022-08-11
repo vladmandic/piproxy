@@ -62,6 +62,10 @@ function writeData(req, input, output) {
   // @ts-ignore
   const acceptCompress = global.config.compress && (global.config.compress > 0) && !encoding && accept; // is compression enabled, data uncompressed and target accepts compression?
   writeHeaders(input, output, acceptCompress); // copy headers from original response
+  // override cors headers
+  output.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none');
+  output.setHeader('Cross-Origin-Opener-Policy', 'unsafe-none');
+  output.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
   // @ts-ignore
   const compress = zlib.createBrotliCompress({ params: { [zlib.constants.BROTLI_PARAM_QUALITY]: global.config.compress } }); // zlib.createGzip({ level: global.config.compress });
   if (!acceptCompress) input.pipe(output); // don't compress data
