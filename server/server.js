@@ -19,7 +19,8 @@ let ssl;
 function errorHandler(err, req, res) {
   if (err) {
     const client = `${req.headers[':scheme'] || (req.socket.encrypted ? 'https' : 'http')}://${req.headers[':authority'] || req.headers.host}${req.url}`;
-    log.error('Proxy error', client, err.statusCode, err.code, `${err.address}:${err.port}`);
+    if (err.statusCode) log.error('Proxy error', client, err.statusCode, err.code, `${err.address}:${err.port}`);
+    else log.error('Proxy error', client, err);
     res.setHeader('proxy-error', err);
     if (err.statusCode) res.writeHead(err.statusCode, res.headers);
     res.end();
@@ -50,7 +51,7 @@ function writeHeaders(input, output, compress) {
   for (const header of tempHeaders) {
     output.setHeader(header[0], header[1]);
   }
-  if (!output.getHeader('content-type').startsWith('text/html')) output.removeHeader('content-security-policy');
+  if (!output.getHeader('content-type')?.startsWith('text/html')) output.removeHeader('content-security-policy');
   // output.setHeader('x-powered-by', 'PiProxy');
   output.setHeader('x-content-type-options', 'nosniff');
   if (compress) output.setHeader('content-encoding', 'br'); // gzip
