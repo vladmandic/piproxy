@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/piproxy",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Reverse HTTP/HTTPS/HTTP2 Proxy in NodeJS with SSL Certificate Management, Compression, Security Enforcement and Rate Limiting",
   "main": "dist/piproxy.js",
   "sideEffects": false,
