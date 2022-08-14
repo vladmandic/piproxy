@@ -1,0 +1,38 @@
+{
+  "log": {
+    "enabled": false,
+    "debug": false,
+    "console": true,
+    "output": ""
+  },
+  "profiles": {
+    "production": ["lint", "compile", "changelog"]
+  },
+  "lint": {
+    "locations": [ "*.json", "src/**/*.ts" ],
+    "rules": { }
+  },
+  "build": {
+    "global": {
+      "target": "es2020",
+      "sourcemap": true,
+      "treeShaking": true,
+      "ignoreAnnotations": true,
+      "banner": { "js": "/*\n  proxy\n  homepage: <https://github.com/vladmandic/piproxy>\n  author: <https://github.com/vladmandic>'\n*/\n" }
+    },
+    "targets": [
+      {
+        "name": "client",
+        "format": "cjs",
+        "platform": "node",
+        "minify": false,
+        "input": "src/index.ts",
+        "output": "dist/piproxy.js",
+        "external": ["@vladmandic/piacme", "@vladmandic/pilogger", "http", "https", "http2", "crypto", "fs", "os", "net", "zlib", "path", "process", "superagent", "helmet", "maxmind", "simple-git", "connect"]
+      }
+    ]
+  },
+  "typescript": {
+    "allowJs": false
+  }
+}

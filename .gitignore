@@ -1,8 +1,8 @@
-node_modules
-cert/**
-logs
-setup.json
-piproxy*.db
-piproxy*.log
-geoip/**
 pnpm-lock.yaml
+node_modules
+.well-known/**
+cert/**
+logs/**
+geoip/**
+*.js.map
+config.json

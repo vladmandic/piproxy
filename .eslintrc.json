@@ -1,50 +1,44 @@
 {
   "globals": {},
   "env": {
-      "browser": true,
-      "commonjs": true,
-      "es6": true,
-      "node": true,
-      "jquery": true,
-      "es2020": true
+    "commonjs": true,
+    "node": true,
+    "es2022": true
   },
-  "parserOptions": { "ecmaVersion": "latest" },
-  "plugins": [ "html" ],
-  "extends": [
-    "eslint:recommended",
-    "plugin:import/errors",
-    "plugin:import/warnings",
-    "plugin:node/recommended",
-    "plugin:promise/recommended",
-    "plugin:json/recommended",
-    "airbnb-base"
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": { "ecmaVersion": 2022 },
+  "plugins": [
+    "@typescript-eslint",
+    "import",
+    "json"
   ],
+  "extends": [
+    "airbnb-base",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:json/recommended-with-comments",
+    "plugin:import/typescript"
+  ],
+  "ignorePatterns": [],
   "rules": {
-    "max-len": [1, 270, 3],
-    "camelcase": "off",
-    "guard-for-in": "off",
-    "import/extensions": "off",
-    "no-await-in-loop": "off",
-    "no-bitwise": "off",
+    "max-len": [1, 275, 3],
+    "@typescript-eslint/ban-ts-comment":"off",
+    "dot-notation":"off",
+    "import/extensions":"off",
+    "import/prefer-default-export":"off",
+    "import/no-extraneous-dependencies":"off",
+    "lines-between-class-members":"off",
+    "no-await-in-loop":"off",
+    "no-bitwise":"off",
+    "no-mixed-operators":"off",
+    "no-plusplus":"off",
     "no-case-declarations":"off",
-    "no-continue": "off",
-    "no-loop-func": "off",
-    "no-mixed-operators": "off",
     "no-param-reassign":"off",
-    "no-plusplus": "off",
-    "no-restricted-globals": "off",
-    "no-restricted-syntax": "off",
-    "no-underscore-dangle": "off",
-    "node/no-unsupported-features/es-syntax": "off",
-    "node/shebang": "off",
-    "object-curly-newline": "off",
-    "prefer-destructuring": "off",
-    "promise/always-return": "off",
-    "promise/catch-or-return": "off",
-    "promise/no-nesting": "off",
+    "no-restricted-syntax":"off",
     "no-regex-spaces":"off",
-    "dot-notation": "off",
-    "no-unneeded-ternary": "off",
-    "promise/no-callback-in-promise": "off"
+    "object-curly-newline":"off",
+    "prefer-template":"off",
+    "radix":"off"
   }
 }

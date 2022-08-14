@@ -1,10 +1,11 @@
-const superagent = require('superagent');
-const log = require('@vladmandic/pilogger');
-const node = require('../package.json');
+import * as superagent from 'superagent';
+import * as log from '@vladmandic/pilogger';
+import * as node from '../package.json';
 
-let config = { hosts: [] };
+type NoIPConfig = { host: string[], user: string, password: string };
+let config: NoIPConfig = { host: [], user: '', password: '' };
 
-async function update(initial) {
+export async function update(initial: NoIPConfig): Promise<void> {
   if (initial && initial.host) config = initial;
   for (const hostname of config.host) {
     superagent
@@ -16,13 +17,11 @@ async function update(initial) {
         const text = (res && res.text) ? res.text.replace('\r\n', '') : 'unknown';
         const status = (res && res.status) ? res.status : 'unknown';
         const rec = { hostname, status, text };
-        log.state('NoIP:', rec);
+        log.state('noip', rec);
       })
       .catch((err) => {
-        log.warn(`NoIP error: ${err}`);
+        log.warn(`noip error: ${err}`);
       });
   }
   setTimeout(update, 3600 * 1000 * 2);
 }
-
-exports.update = update;

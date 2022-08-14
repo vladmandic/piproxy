@@ -1,11 +1,11 @@
 [Unit]
-Description=piproxy
+Description=proxy
 After=network.target network-online.target
 
 [Service]
 Type=simple
 Environment="NODE_ENV=production"
-ExecStart=/home/vlado/.nvm/versions/node/v17.7.2/bin/node --trace-uncaught --trace-warnings --unhandled-rejections=throw server/piproxy.js
+ExecStart=/home/vlado/.nvm/versions/node/v17.7.2/bin/node dist/piproxy.js
 WorkingDirectory=/home/vlado/dev/piproxy
 StandardOutput=inherit
 StandardError=inherit

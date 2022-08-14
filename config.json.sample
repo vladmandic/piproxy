@@ -1,0 +1,21 @@
+{
+  "redirects": [
+    { "url": "weather.ddns.net", "target": "localhost", "port": "10000" },
+    { "url": "clock.ddns.net", "target": "localhost", "port": "10010" },
+    { "url": "profile.ddns.net", "target": "localhost", "port": "10020" },
+    { "default": true, "target": "localhost", "port": "10000" }
+  ],
+  "noip": {
+    "host": [ "weather.ddns.net", "clock.ddns.net", "profile.ddns.net" ],
+    "user": "me@example.com",
+    "password": "password"
+  },
+  "acme": {
+    "domains": [ "weather.ddns.net", "clock.ddns.net", "profile.ddns.net" ],
+    "maintainer": "me@example.com",
+    "subscriber": "me@example.com"
+  },
+  "answers": {
+    "security.txt": "Contact: mailto:me@example.com\nPreferred-Languages: en\n"
+  }
+}
