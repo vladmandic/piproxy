@@ -1,7 +1,7 @@
 "use strict";
 /*
   proxy
-  homepage: <https://github.com/vladmandic/proxy>
+  homepage: <https://github.com/vladmandic/piproxy>
   author: <https://github.com/vladmandic>'
 */
 
@@ -125,8 +125,8 @@ var config2 = {
     password: ""
   },
   acme: {
-    application: "proxy/1.0.0",
     domains: [],
+    application: "piproxy/1.0.0",
     accountFile: "./cert/account.json",
     accountKeyFile: "./cert/account.pem",
     ServerKeyFile: "./cert/private.pem",
@@ -307,7 +307,6 @@ var Record = class {
     __publicField(this, "ip");
     __publicField(this, "length");
     __publicField(this, "agent");
-    __publicField(this, "client");
     __publicField(this, "device");
     __publicField(this, "country");
     __publicField(this, "continent");
@@ -327,7 +326,7 @@ var Record = class {
     this.device = device && device.length > 0 ? device[1] : void 0;
     this.agent = agent.replace(/\(.*\)/, "").replace(/  /g, " ").trim().split(" ");
     const peer = clientReq.socket._peername;
-    this.ip = peer.address || clientReq.socket.remoteAddress;
+    this.ip = peer?.address || clientReq?.socket?.remoteAddress;
     const geo = get2(this.ip || "127.0.0.1");
     this.country = geo.country;
     this.continent = geo.continent;
@@ -337,7 +336,6 @@ var Record = class {
     this.lon = geo.lon;
     this.scheme = head[":scheme"] || (clientReq.socket.encrypted ? "https" : "http");
     this.host = head[":authority"] || head.host;
-    this.client = `${head[":scheme"] || (clientReq.socket.encrypted ? "https" : "http")}://${head[":authority"] || head.host}${clientReq.url}`;
     this.length = proxyReq.headers ? proxyReq.headers["content-length"] || proxyReq.headers["content-size"] : void 0;
     this.etag = proxyReq.headers ? proxyReq.headers["etag"] : void 0;
     this.mime = proxyReq.headers ? proxyReq.headers["content-type"] : void 0;
@@ -347,7 +345,9 @@ var Record = class {
     this.protocol = clientReq.socket.alpnProtocol || clientReq.httpVersion;
     this.status = proxyReq.statusCode;
     this.url = clientReq.url || "";
-    this.duration = Number((process.hrtime.bigint() - BigInt(clientReq.headers["timestamp"])) / 1000000n);
+    if (this.url.length > 64)
+      this.url = this.url.substring(0, 64) + "...";
+    this.duration = clientReq.headers["timestamp"] ? Number((process.hrtime.bigint() - BigInt(clientReq.headers["timestamp"] || 0)) / 1000000n) : 0;
   }
 };
 function logger(clientReq, proxyReq) {
@@ -769,9 +769,9 @@ async function init3() {
   const app2 = (0, import_connect.default)();
   cfg = get3();
   if (cfg.helmet) {
-    const short = cfg.helmet;
+    const short = JSON.parse(JSON.stringify(cfg.helmet));
     short.contentSecurityPolicy.directives = { count: [Object.keys(short.contentSecurityPolicy.directives).length.toString()] };
-    log6.info("helmet", cfg.helmet);
+    log6.info("helmet", short);
     app2.use((0, import_helmet.default)(cfg.helmet));
   }
   if (cfg.limiter) {
@@ -1008,7 +1008,7 @@ function checkServer() {
     else
       log7.error("server", { status: "not listening", connections, error: error4 });
   });
-  setInterval(checkServer, 6e4);
+  setTimeout(checkServer, 6e4);
 }
 async function init4(sslOptions) {
   ssl = sslOptions;

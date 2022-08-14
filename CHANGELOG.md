@@ -9,6 +9,9 @@
   
 ## Changelog
   
+### **HEAD -> master** 2022/08/14 mandic00@live.com
+
+
 ### **1.1.24** 2022/08/11 mandic00@live.com
 
 - fix loading of service workers

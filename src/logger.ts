@@ -14,7 +14,6 @@ export class Record {
   ip: string | undefined;
   length: string | undefined;
   agent: string[] | undefined;
-  client: string | undefined;
   device: string | undefined;
   country: string | undefined;
   continent: string | undefined;
@@ -37,7 +36,7 @@ export class Record {
     this.agent = agent.replace(/\(.*\)/, '').replace(/  /g, ' ').trim().split(' ');
     // @ts-ignore optional and rare
     const peer = clientReq.socket._peername; // eslint-disable-line no-underscore-dangle
-    this.ip = peer.address || clientReq.socket.remoteAddress;
+    this.ip = peer?.address || clientReq?.socket?.remoteAddress;
     const geo = geoip.get(this.ip || '127.0.0.1');
     this.country = geo.country;
     this.continent = geo.continent;
@@ -47,7 +46,6 @@ export class Record {
     this.lon = geo.lon;
     this.scheme = head[':scheme'] as string || ((clientReq.socket as TLSSocket).encrypted ? 'https' : 'http');
     this.host = head[':authority'] as string || head.host;
-    this.client = `${head[':scheme'] || ((clientReq.socket as TLSSocket).encrypted ? 'https' : 'http')}://${head[':authority'] || head.host}${clientReq.url}`;
     this.length = proxyReq.headers ? (proxyReq.headers['content-length'] || proxyReq.headers['content-size']) as string : undefined;
     this.etag = proxyReq.headers ? proxyReq.headers['etag'] : undefined;
     this.mime = proxyReq.headers ? proxyReq.headers['content-type'] : undefined;
@@ -58,7 +56,8 @@ export class Record {
     // @ts-ignore yes it exists
     this.status = proxyReq.statusCode;
     this.url = clientReq.url || '';
-    this.duration = Number((process.hrtime.bigint() - BigInt(clientReq.headers['timestamp'] as string)) / 1000000n);
+    if (this.url.length > 64) this.url = this.url.substring(0, 64) + '...';
+    this.duration = clientReq.headers['timestamp'] ? Number((process.hrtime.bigint() - BigInt(clientReq.headers['timestamp'] as string || 0)) / 1000000n) : 0;
   }
 }
 

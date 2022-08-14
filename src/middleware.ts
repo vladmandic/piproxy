@@ -39,9 +39,9 @@ export async function init() {
   const app = connect();
   cfg = config.get();
   if (cfg.helmet) {
-    const short = cfg.helmet;
+    const short = JSON.parse(JSON.stringify(cfg.helmet));
     short.contentSecurityPolicy.directives = { count: [Object.keys(short.contentSecurityPolicy.directives).length.toString()] };
-    log.info('helmet', cfg.helmet);
+    log.info('helmet', short);
     app.use(helmet(cfg.helmet));
   }
   if (cfg.limiter) {

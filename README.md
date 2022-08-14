@@ -164,6 +164,52 @@ Once databases are available, they can be specified in the configuration:
 
 ## Example Log
 
+### Startup
+
+```js
+2022-08-14 11:01:13 INFO:  configuration { file: 'config.json' }
+2022-08-14 11:01:13 INFO:  { application: '@vladmandic/piproxy', version: '2.0.0' }
+2022-08-14 11:01:13 INFO:  { user: 'vlado', platform: 'linux', arch: 'x64', node: 'v18.7.0' }
+2022-08-14 11:01:13 STATE: { log: '/home/vlado/dev/piproxy/logs/proxy.log', access: '/home/vlado/dev/piproxy', client: '/home/vlado/dev/piproxy' }
+2022-08-14 11:01:13 INFO:  ssl { key: '../cert/private.pem', crt: '../cert/fullchain.pem' }
+2022-08-14 11:01:13 INFO:  ssl account { contact: 'mailto:mandic00@live.com', status: 'valid', type: 'EC', crv: 'P-256' }
+2022-08-14 11:01:13 INFO:  ssl server { subject: 'pidash.ddns.net', issuer: "C=US, O=Let's Encrypt, CN=R3", algorithm: 'sha256WithRSAEncryption', from: 2022-07-12T12:09:02.000Z, until: 2022-10-10T12:09:01.000Z, type: 'RSA', use: 'sig' }
+2022-08-14 11:01:13 INFO:  ssl certificate { check: './cert/fullchain.pem' }
+2022-08-14 11:01:13 STATE: ssl certificate validity { days: 57, renew: 'skip' }
+2022-08-14 11:01:13 STATE: geoip { city: './geoip/GeoLite2-City.mmdb', asn: './geoip/GeoLite2-ASN.mmdb' }
+2022-08-14 11:01:13 INFO:  helmet { frameguard: false, xssFilter: false, dnsPrefetchControl: { allow: true }, noSniff: false, hsts: { maxAge: 15552000, preload: true }, referrerPolicy: { policy: 'no-referrer' }, expectCt: { enforce: true }, contentSecurityPolicy: { directives: { count: [ '10' ] } } }
+2022-08-14 11:01:13 INFO:  limiter { interval: 10, tokens: 500 }
+2022-08-14 11:01:13 INFO:  compression { brotli: 5 }
+2022-08-14 11:01:13 INFO:  proxy { url: 'pimiami.ddns.net', target: 'localhost', port: '10060' }
+2022-08-14 11:01:13 INFO:  proxy { url: 'weather.local', target: 'localhost', port: '10060' }
+2022-08-14 11:01:13 INFO:  proxy { url: 'stocks.local', target: 'localhost', port: '10040' }
+2022-08-14 11:01:13 INFO:  proxy { url: 'pi.hole', target: 'localhost', port: '10050' }
+2022-08-14 11:01:13 INFO:  proxy { default: true, target: 'localhost', port: '10020' }
+2022-08-14 11:01:13 INFO:  static { paths: [ 'security.txt', 'humans.txt', 'robots.txt', 'git.head', 'sitemap.xml', 'version' ] }
+2022-08-14 11:01:13 STATE: server { status: 'listening', address: '::', family: 'IPv6', port: 443 }
+2022-08-14 11:01:13 STATE: server { user: { uid: 1000, gid: 1000, username: 'vlado', homedir: '/home/vlado', shell: '/bin/bash' } }
+2022-08-14 11:01:13 STATE: noip { hostname: 'pimiami.ddns.net', status: 200, text: 'nochg 159.250.178.205' }
+2022-08-14 11:01:15 STATE: monitor { server: { url: 'pimiami.ddns.net', target: 'localhost', port: '10060' }, url: { lookup: false, connect: false, error: '', ready: false, data: false }, target: { lookup: false, connect: false, error: '', ready: false, data: false } }
+2022-08-14 11:01:16 STATE: monitor { server: { url: 'weather.local', target: 'localhost', port: '10060' }, url: { lookup: false, connect: false, error: '', ready: false, data: false }, target: { lookup: false, connect: false, error: '', ready: false, data: false } }
+2022-08-14 11:01:16 STATE: monitor { server: { url: 'stocks.local', target: 'localhost', port: '10040' }, url: { lookup: false, connect: false, error: '', ready: false, data: false }, target: { lookup: false, connect: false, error: '', ready: false, data: false } }
+2022-08-14 11:01:16 STATE: monitor { server: { url: 'pi.hole', target: 'localhost', port: '10050' }, url: { lookup: false, connect: false, error: '', ready: false, data: false }, target: { lookup: false, connect: false, error: '', ready: false, data: false } }
+2022-08-14 11:01:17 STATE: monitor { server: { default: true, target: 'localhost', port: '10020' }, url: { lookup: false, connect: false, error: '', ready: false, data: false }, target: { lookup: false, connect: false, error: '', ready: false, data: false } }
+2022-08-14 11:01:18 STATE: server { status: 'active', connections: 0, error: null }
+```
+
+### Client Requests
+
+```js
+2022-08-14 11:05:33 DATA:  { method: 'GET', protocol: 'h2', status: 200, scheme: 'https', host: 'pimiami.ddns.net', url: '/', ip: '::ffff:192.168.0.201', agent: [ 'AppleWebKit/537.36', 'Chrome/104.0.5112.81', 'Safari/537.36', 'Edg/104.0.1293.54' ], client: 'https://pimiami.ddns.net/', device: 'Windows NT 10.0; Win64; x64', mime: 'text/html; charset=utf-8', duration: 550 }
+2022-08-14 11:05:33 DATA:  { method: 'GET', protocol: 'h2', status: 200, scheme: 'https', host: 'pimiami.ddns.net', url: '/index.css', ip: '::ffff:192.168.0.201', agent: [ 'AppleWebKit/537.36', 'Chrome/104.0.5112.81', 'Safari/537.36', 'Edg/104.0.1293.54' ], client: 'https://pimiami.ddns.net/index.css', device: 'Windows NT 10.0; Win64; x64', mime: 'text/css; charset=utf-8', duration: 11 }
+2022-08-14 11:05:33 DATA:  { method: 'GET', protocol: 'h2', status: 200, scheme: 'https', host: 'pimiami.ddns.net', url: '/assets/leaflet.css', ip: '::ffff:192.168.0.201', agent: [ 'AppleWebKit/537.36', 'Chrome/104.0.5112.81', 'Safari/537.36', 'Edg/104.0.1293.54' ], client: 'https://pimiami.ddns.net/assets/leaflet.css', device: 'Windows NT 10.0; Win64; x64', mime: 'text/css; charset=utf-8', duration: 12 }
+2022-08-14 11:05:34 DATA:  { method: 'GET', protocol: 'h2', status: 200, scheme: 'https', host: 'pimiami.ddns.net', url: '/dist/index.js', ip: '::ffff:192.168.0.201', agent: [ 'AppleWebKit/537.36', 'Chrome/104.0.5112.81', 'Safari/537.36', 'Edg/104.0.1293.54' ], client: 'https://pimiami.ddns.net/dist/index.js', device: 'Windows NT 10.0; Win64; x64', mime: 'text/javascript; charset=utf-8', duration: 35 }
+2022-08-14 11:05:34 DATA:  { method: 'GET', protocol: 'h2', status: 200, scheme: 'https', host: 'pimiami.ddns.net', url: '/favicon.ico', ip: '::ffff:192.168.0.201', agent: [ 'AppleWebKit/537.36', 'Chrome/104.0.5112.81', 'Safari/537.36', 'Edg/104.0.1293.54' ], client: 'https://pimiami.ddns.net/favicon.ico', device: 'Windows NT 10.0; Win64; x64', mime: 'image/x-icon', duration: 9 }
+2022-08-14 11:05:34 DATA:  { method: 'GET', protocol: 'h2', status: 200, scheme: 'https', host: 'pimiami.ddns.net', url: '/dist/pwa-serviceworker.js', ip: '::ffff:192.168.0.201', agent: [ 'AppleWebKit/537.36', 'Chrome/104.0.5112.81', 'Safari/537.36', 'Edg/104.0.1293.54' ], client: 'https://pimiami.ddns.net/dist/pwa-serviceworker.js', device: 'Windows NT 10.0; Win64; x64', mime: 'text/javascript; charset=utf-8', duration: 11 }
+2022-08-14 11:05:34 DATA:  { method: 'GET', protocol: 'h2', status: 200, scheme: 'https', host: 'pimiami.ddns.net', url: '/weather.webmanifest', ip: '::ffff:192.168.0.201', agent: [ 'AppleWebKit/537.36', 'Chrome/104.0.5112.81', 'Safari/537.36', 'Edg/104.0.1293.54' ], client: 'https://pimiami.ddns.net/weather.webmanifest', device: 'Windows NT 10.0; Win64; x64', mime: 'application/manifest+json', duration: 5 }
+2022-08-14 11:05:34 DATA:  { method: 'GET', protocol: 'h2', status: 200, scheme: 'https', host: 'pimiami.ddns.net', url: '/assets/icons/dash-256.png', ip: '::ffff:192.168.0.201', agent: [ 'AppleWebKit/537.36', 'Chrome/104.0.5112.81', 'Safari/537.36', 'Edg/104.0.1293.54' ], client: 'https://pimiami.ddns.net/assets/icons/dash-256.png', device: 'Windows NT 10.0; Win64; x64', mime: 'image/png', duration: 6 }
+```
+
 ## Links
 
 - [License](https://github.com/vladmandic/proxy/LICENSE)

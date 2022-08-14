@@ -160,7 +160,7 @@ export function checkServer() {
     if (server.listening) log.state('server', { status: 'active', connections, error });
     else log.error('server', { status: 'not listening', connections, error });
   });
-  setInterval(checkServer, 60000); // Monitor server status
+  setTimeout(checkServer, 60000); // Monitor server status
 }
 
 export async function init(sslOptions) {
