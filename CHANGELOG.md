@@ -1,6 +1,6 @@
 # @vladmandic/piproxy  
 
-  Version: **2.0.0**  
+  Version: **2.0.1**  
   Description: **Reverse HTTP/HTTPS/HTTP2 Proxy in NodeJS with SSL Certificate Management, Compression, Security Enforcement and Rate Limiting**  
   
   Author: **Vladimir Mandic <mandic00@live.com>**  
@@ -9,8 +9,10 @@
   
 ## Changelog
   
-### **HEAD -> master** 2022/08/14 mandic00@live.com
+### **2.0.1** 2022/08/14 mandic00@live.com
 
+- minor bugfixes
+- major rewrite
 
 ### **1.1.24** 2022/08/11 mandic00@live.com
 

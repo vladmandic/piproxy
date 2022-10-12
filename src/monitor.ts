@@ -54,5 +54,5 @@ export async function check() {
 
 export async function start() {
   check();
-  if (config.get().monitor) setInterval(check, 5 * 60 * 1000);
+  if (config.get().monitor) setInterval(check, 5 * 60 * 60 * 1000);
 }

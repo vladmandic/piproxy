@@ -51,7 +51,7 @@ let config = {
     dnsPrefetchControl: { allow: true as boolean },
     noSniff: false as boolean,
     hsts: { maxAge: 15552000 as number, preload: true },
-    referrerPolicy: { policy: 'no-referrer' as string },
+    referrerPolicy: { policy: 'no-referrer' },
     expectCt: { enforce: true },
     contentSecurityPolicy: {
       directives: {
@@ -99,12 +99,12 @@ export function init() {
       const obj = JSON.parse(blob.toString());
       config = merge(config, obj);
     } catch (err) {
-      log.info('configuration error', { file: 'config.json', err });
+      log.info('Configuration error', { file: 'config.json', err });
     }
     config.answers.version = { name: node.name, version: node.version };
-    log.info('configuration', { file: 'config.json' });
+    log.info('Configuration', { file: 'config.json' });
   } else {
-    log.info('configuration missing', { file: 'config.json' });
+    log.info('Configuration missing', { file: 'config.json' });
   }
 }
 

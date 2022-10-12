@@ -1,5 +1,5 @@
 import connect from 'connect';
-import helmet from 'helmet';
+import helmet, { HelmetOptions } from 'helmet';
 import * as log from '@vladmandic/pilogger';
 import logger from './logger';
 import * as config from './config';
@@ -41,15 +41,15 @@ export async function init() {
   if (cfg.helmet) {
     const short = JSON.parse(JSON.stringify(cfg.helmet));
     short.contentSecurityPolicy.directives = { count: [Object.keys(short.contentSecurityPolicy.directives).length.toString()] };
-    log.info('helmet', short);
-    app.use(helmet(cfg.helmet));
+    log.info('Helmet', short);
+    app.use(helmet(cfg.helmet as HelmetOptions));
   }
   if (cfg.limiter) {
-    log.info('limiter', cfg.limiter);
+    log.info('Limiter', cfg.limiter);
     app.use(limiter);
   }
   if (cfg.compress) {
-    log.info('compression', { brotli: cfg.compress });
+    log.info('Compression', { brotli: cfg.compress });
   }
   return app;
 }

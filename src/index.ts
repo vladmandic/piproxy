@@ -1,5 +1,5 @@
 import * as log from '@vladmandic/pilogger';
-import * as acme from '@vladmandic/piacme';
+import * as acme from '@vladmandic/piacme/src/piacme';
 import * as noip from './noip';
 import * as geoip from './geoip';
 import * as monitor from './monitor';
@@ -37,13 +37,13 @@ async function main() {
   await noip.update(cfg.noip);
 
   // check and auto-update certificates
-  log.info('ssl', cfg.ssl);
+  log.info('SSL', cfg.ssl);
   await acme.init(cfg.acme);
   const cert = await acme.parseCert();
-  if (cert.account.error) log.warn('ssl account', { code: cert?.account?.error?.code, syscall: cert?.account?.error?.syscall, path: cert?.account?.error?.path });
-  else log.info('ssl account', { contact: cert.account.contact, status: cert.account.status, type: cert.accountKey.type, crv: cert.accountKey.crv });
-  if (cert.fullChain.error) log.warn('ssl server', { code: cert?.fullChain?.error?.code, syscall: cert?.fullChain?.error?.syscall, path: cert?.fullChain?.error?.path });
-  else log.info('ssl server', { subject: cert.fullChain.subject, issuer: cert.fullChain.issuer, algorithm: cert.fullChain.algorithm, from: cert.fullChain.notBefore, until: cert.fullChain.notAfter, type: cert.serverKey.type, use: cert.serverKey.use });
+  if (cert.account.error) log.warn('SSL Account', { code: cert?.account?.error?.code, syscall: cert?.account?.error?.syscall, path: cert?.account?.error?.path });
+  else log.info('SSL Account', { contact: cert.account.contact, status: cert.account.status, type: cert.accountKey.type, crv: cert.accountKey.crv });
+  if (cert.fullChain.error) log.warn('SSL Server', { code: cert?.fullChain?.error?.code, syscall: cert?.fullChain?.error?.syscall, path: cert?.fullChain?.error?.path });
+  else log.info('SSL Server', { subject: cert.fullChain.subject, issuer: cert.fullChain.issuer, algorithm: cert.fullChain.algorithm, from: cert.fullChain.notBefore, until: cert.fullChain.notAfter, type: cert.serverKey.type, use: cert.serverKey.use });
   await acme.getCert(); // validate & auto-renew
   await acme.monitorCert(server.restartServer); // start ssl certificate monitoring for expiration
 

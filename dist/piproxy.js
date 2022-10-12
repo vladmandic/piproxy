@@ -1,10 +1,10 @@
-"use strict";
 /*
   proxy
   homepage: <https://github.com/vladmandic/piproxy>
   author: <https://github.com/vladmandic>'
 */
 
+"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -30,39 +30,73 @@ var __publicField = (obj, key, value) => {
 };
 
 // src/index.ts
-var log8 = __toESM(require("@vladmandic/pilogger"));
-var acme = __toESM(require("@vladmandic/piacme"));
+var log9 = __toESM(require("@vladmandic/pilogger"));
+var acme = __toESM(require("@vladmandic/piacme/src/piacme"));
 
 // src/noip.ts
 var superagent = __toESM(require("superagent"));
+var log2 = __toESM(require("@vladmandic/pilogger"));
+
+// src/scan.ts
 var log = __toESM(require("@vladmandic/pilogger"));
+async function scan(host, startPort, endPort) {
+  try {
+    const res = await fetch("https://www.ipfingerprints.com/scripts/getPortsInfo.php", {
+      headers: {
+        accept: "application/json, text/javascript, */*; q=0.01",
+        "cache-control": "no-cache",
+        "content-type": "application/x-www-form-urlencoded",
+        pragma: "no-cache",
+        Referer: "https://www.ipfingerprints.com/portscan.php"
+      },
+      body: `remoteHost=${host}&start_port=${startPort}&end_port=${endPort}&normalScan=Yes&scan_type=connect&ping_type=none`,
+      method: "POST"
+    });
+    if (!res?.ok)
+      return [];
+    const html = await res.text();
+    const text = html.replace(/<[^>]*>/g, "");
+    const lines = text.split("\\n").map((line) => line.replace("'", "").trim()).filter((line) => line.includes("tcp "));
+    const parsed = lines.map((line) => line.replace("\\/tcp", "").split(" ").filter((str) => str.length > 0));
+    const services = parsed.map((line) => ({ host, port: Number(line[0]), state: line[1], service: line[2] }));
+    log.state("Scan", services);
+    return services;
+  } catch {
+    return [];
+  }
+}
 
 // package.json
 var name = "@vladmandic/piproxy";
-var version = "2.0.0";
+var version = "2.0.1";
 
 // src/noip.ts
 var config = { host: [], user: "", password: "" };
+var results = [];
 async function update(initial) {
   if (initial && initial.host)
     config = initial;
   for (const hostname of config.host) {
     superagent.get("dynupdate.no-ip.com/nic/update").set("User-Agent", `${name}/${version}`).auth(config.user, config.password).query({ hostname }).then((res) => {
-      const text = res && res.text ? res.text.replace("\r\n", "") : "unknown";
+      const text = res && res.text ? res.text.replace("\r\n", "").split(" ") : ["unknown", "unknown"];
       const status = res && res.status ? res.status : "unknown";
-      const rec = { hostname, status, text };
-      log.state("noip", rec);
+      const rec = { hostname, status, text: text[0], ip: text[1] };
+      if (!results.map((r) => r.ip).includes(rec.ip))
+        scan(rec.ip, 80, 80);
+      results.push(rec);
+      log2.state("NoIP", rec);
     }).catch((err) => {
-      log.warn(`noip error: ${err}`);
+      log2.warn(`NoIP error: ${err}`);
     });
   }
   setTimeout(update, 3600 * 1e3 * 2);
+  return results;
 }
 
 // src/geoip.ts
 var fs = __toESM(require("fs"));
 var maxmind = __toESM(require("maxmind"));
-var log2 = __toESM(require("@vladmandic/pilogger"));
+var log3 = __toESM(require("@vladmandic/pilogger"));
 var geoCity;
 var geoASN;
 async function init(geoIPCityDB, geoIPASNDB) {
@@ -70,12 +104,12 @@ async function init(geoIPCityDB, geoIPASNDB) {
     if (fs.existsSync(geoIPCityDB) && fs.existsSync(geoIPASNDB)) {
       geoCity = await maxmind.open(geoIPCityDB);
       geoASN = await maxmind.open(geoIPASNDB);
-      log2.state("geoip", { city: geoIPCityDB, asn: geoIPASNDB });
+      log3.state("GeoIP", { city: geoIPCityDB, asn: geoIPASNDB });
     } else {
-      log2.warn("geoip missing", { city: geoIPCityDB, asn: geoIPASNDB });
+      log3.warn("GeoIP missing", { city: geoIPCityDB, asn: geoIPASNDB });
     }
   } catch {
-    log2.warn("geoip failed", { city: geoIPCityDB, asn: geoIPASNDB });
+    log3.warn("GeoIP failed", { city: geoIPCityDB, asn: geoIPASNDB });
   }
 }
 function get2(addr) {
@@ -111,12 +145,12 @@ function get2(addr) {
 
 // src/monitor.ts
 var net = __toESM(require("net"));
-var log4 = __toESM(require("@vladmandic/pilogger"));
+var log5 = __toESM(require("@vladmandic/pilogger"));
 
 // src/config.ts
 var fs2 = __toESM(require("fs"));
 var crypto = __toESM(require("crypto"));
-var log3 = __toESM(require("@vladmandic/pilogger"));
+var log4 = __toESM(require("@vladmandic/pilogger"));
 var config2 = {
   logFile: "logs/proxy.log",
   noip: {
@@ -210,12 +244,12 @@ function init2() {
       const obj = JSON.parse(blob.toString());
       config2 = merge(config2, obj);
     } catch (err) {
-      log3.info("configuration error", { file: "config.json", err });
+      log4.info("Configuration error", { file: "config.json", err });
     }
     config2.answers.version = { name, version };
-    log3.info("configuration", { file: "config.json" });
+    log4.info("Configuration", { file: "config.json" });
   } else {
-    log3.info("configuration missing", { file: "config.json" });
+    log4.info("Configuration missing", { file: "config.json" });
   }
 }
 var get3 = () => config2;
@@ -266,21 +300,21 @@ async function checkSocket(server2) {
 async function check() {
   const out = [];
   if (!get3().redirects || get3().redirects.length <= 0)
-    log4.warn("monitor", { targets: 0 });
+    log5.warn("monitor", { targets: 0 });
   for (const server2 of get3().redirects) {
     const res = await checkSocket(server2);
     out.push(res);
     if (!res.url.error && !res.target.error)
-      log4.state("monitor", { server: server2, url: res.url, target: res.target });
+      log5.state("monitor", { server: server2, url: res.url, target: res.target });
     else
-      log4.warn("monitor", { server: server2, url: res.url, target: res.target });
+      log5.warn("monitor", { server: server2, url: res.url, target: res.target });
   }
   return out;
 }
 async function start() {
   check();
   if (get3().monitor)
-    setInterval(check, 5 * 60 * 1e3);
+    setInterval(check, 5 * 60 * 60 * 1e3);
 }
 
 // src/server.ts
@@ -291,10 +325,10 @@ var path = __toESM(require("path"));
 var http2 = __toESM(require("http"));
 var http22 = __toESM(require("http2"));
 var process3 = __toESM(require("process"));
-var log7 = __toESM(require("@vladmandic/pilogger"));
+var log8 = __toESM(require("@vladmandic/pilogger"));
 
 // src/logger.ts
-var log5 = __toESM(require("@vladmandic/pilogger"));
+var log6 = __toESM(require("@vladmandic/pilogger"));
 var Record = class {
   constructor(clientReq, proxyReq) {
     __publicField(this, "timestamp");
@@ -353,7 +387,7 @@ var Record = class {
 function logger(clientReq, proxyReq) {
   const record = new Record(clientReq, proxyReq);
   const data2 = Object.fromEntries(Object.entries(record).filter(([_key, val]) => val));
-  log5.data(data2);
+  log6.data(data2);
   return record;
 }
 
@@ -733,7 +767,7 @@ var proxy_default = process2(request);
 // src/middleware.ts
 var import_connect = __toESM(require("connect"));
 var import_helmet = __toESM(require("helmet"));
-var log6 = __toESM(require("@vladmandic/pilogger"));
+var log7 = __toESM(require("@vladmandic/pilogger"));
 var bucket = [];
 var cfg = get3();
 function limiter(req, res, next) {
@@ -771,15 +805,15 @@ async function init3() {
   if (cfg.helmet) {
     const short = JSON.parse(JSON.stringify(cfg.helmet));
     short.contentSecurityPolicy.directives = { count: [Object.keys(short.contentSecurityPolicy.directives).length.toString()] };
-    log6.info("helmet", short);
+    log7.info("Helmet", short);
     app2.use((0, import_helmet.default)(cfg.helmet));
   }
   if (cfg.limiter) {
-    log6.info("limiter", cfg.limiter);
+    log7.info("Limiter", cfg.limiter);
     app2.use(limiter);
   }
   if (cfg.compress) {
-    log6.info("compression", { brotli: cfg.compress });
+    log7.info("Compression", { brotli: cfg.compress });
   }
   return app2;
 }
@@ -872,9 +906,9 @@ function errorHandler(err, req, res) {
   if (err) {
     const client = `${req.headers[":scheme"] || (req.socket.encrypted ? "https" : "http")}://${req.headers[":authority"] || req.headers.host}${req.url}`;
     if (err.statusCode)
-      log7.error("proxy", { client, status: err.statusCode, code: err.code, address: err.address, port: err.port });
+      log8.error("Proxy", { client, status: err.statusCode, code: err.code, address: err.address, port: err.port });
     else
-      log7.error("proxy", { client, err });
+      log8.error("Proxy", { client, err });
     res.setHeader("proxy-error", err);
     if (err.statusCode)
       res.writeHead(err.statusCode, req.headers);
@@ -889,8 +923,8 @@ function redirectSecure() {
     res.end();
     logger(req, req);
   });
-  redirector.on("error", (err) => log7.error("server", { message: err.message || err }));
-  redirector.on("close", () => log7.state("server", { status: "closed" }));
+  redirector.on("error", (err) => log8.error("server", { message: err.message || err }));
+  redirector.on("close", () => log8.state("server", { status: "closed" }));
   redirector.listen(80);
 }
 function writeHeaders(input, output, compress) {
@@ -961,52 +995,52 @@ var findTarget = {
   }
 };
 function dropPriviledges() {
-  log7.state("server", { user: os.userInfo() });
+  log8.state("server", { user: os.userInfo() });
   const uid = parseInt(process3.env.SUDO_UID || "");
   if (uid) {
     if (process3.setuid)
       process3.setuid(uid);
-    log7.state("server user override", { uid: process3.getuid ? process3.getuid() : "unknown" });
+    log8.state("server user override", { uid: process3.getuid ? process3.getuid() : "unknown" });
   }
 }
 function startServer() {
   let key;
   let cert;
   if (!fs3.existsSync(path.join(__dirname, ssl.key)))
-    log7.warn("ssl key missing:", ssl);
+    log8.warn("ssl key missing:", ssl);
   else
     key = fs3.readFileSync(path.join(__dirname, ssl.key));
   if (!fs3.existsSync(path.join(__dirname, ssl.crt)))
-    log7.warn("ssl key missing:", ssl);
+    log8.warn("ssl key missing:", ssl);
   else
     cert = fs3.readFileSync(path.join(__dirname, ssl.crt));
   if (!key || !cert)
-    log7.warn("server", { ssl: "fail" });
+    log8.warn("server", { ssl: "fail" });
   server = http22.createSecureServer({ ...cfg2.http2, key, cert });
   server.on("listening", () => {
-    log7.state("server", { status: "listening", ...server.address() });
+    log8.state("server", { status: "listening", ...server.address() });
     dropPriviledges();
   });
-  server.on("error", (err) => log7.error("server", { message: err.message || err }));
-  server.on("close", () => log7.state("server", { status: "closed" }));
+  server.on("error", (err) => log8.error("server", { message: err.message || err }));
+  server.on("close", () => log8.state("server", { status: "closed" }));
   server.on("request", app);
   server.listen(cfg2.http2.port);
 }
 function restartServer() {
   if (!server) {
-    log7.warn("server", { status: "not started" });
+    log8.warn("server", { status: "not started" });
     return;
   }
-  log7.info("server", { status: "restarting" });
+  log8.info("server", { status: "restarting" });
   server.close();
   setTimeout(() => startServer(), 2e3);
 }
 function checkServer() {
   server.getConnections((error4, connections) => {
     if (server.listening)
-      log7.state("server", { status: "active", connections, error: error4 });
+      log8.state("server", { status: "active", connections, error: error4 });
     else
-      log7.error("server", { status: "not listening", connections, error: error4 });
+      log8.error("server", { status: "not listening", connections, error: error4 });
   });
   setTimeout(checkServer, 6e4);
 }
@@ -1017,10 +1051,10 @@ async function init4(sslOptions) {
   app = await init3();
   startServer();
   if (!cfg2.redirects || cfg2.redirects.length <= 0)
-    log7.warn("proxy", { rules: 0 });
+    log8.warn("Proxy", { rules: 0 });
   for (const rule of cfg2.redirects)
-    log7.info("proxy", rule);
-  log7.info("static", { paths: Object.keys(cfg2.answers) });
+    log8.info("Proxy", rule);
+  log8.info("Static", { paths: Object.keys(cfg2.answers) });
   app.use((req, res, next) => get4(req, res, next));
   app.use((req, res) => proxy_default.web(req, res, findTarget, errorHandler));
   setTimeout(checkServer, 5e3);
@@ -1028,13 +1062,13 @@ async function init4(sslOptions) {
 
 // src/index.ts
 function exit(signal) {
-  log8.warn("exit", { signal });
+  log9.warn("exit", { signal });
   process.exit(0);
 }
 function error3(err) {
-  log8.error("exception");
+  log9.error("exception");
   for (const line of (err.stack || "").split("\n"))
-    log8.error(line);
+    log9.error(line);
   process.exit(1);
 }
 async function main() {
@@ -1044,20 +1078,20 @@ async function main() {
   process.on("uncaughtException", (err) => error3(err));
   init2();
   const cfg3 = get3();
-  log8.configure({ logFile: cfg3.logFile, inspect: { breakLength: 1024 } });
-  log8.headerJson();
+  log9.configure({ logFile: cfg3.logFile, inspect: { breakLength: 1024 } });
+  log9.headerJson();
   await update(cfg3.noip);
-  log8.info("ssl", cfg3.ssl);
+  log9.info("SSL", cfg3.ssl);
   await acme.init(cfg3.acme);
   const cert = await acme.parseCert();
   if (cert.account.error)
-    log8.warn("ssl account", { code: cert?.account?.error?.code, syscall: cert?.account?.error?.syscall, path: cert?.account?.error?.path });
+    log9.warn("SSL Account", { code: cert?.account?.error?.code, syscall: cert?.account?.error?.syscall, path: cert?.account?.error?.path });
   else
-    log8.info("ssl account", { contact: cert.account.contact, status: cert.account.status, type: cert.accountKey.type, crv: cert.accountKey.crv });
+    log9.info("SSL Account", { contact: cert.account.contact, status: cert.account.status, type: cert.accountKey.type, crv: cert.accountKey.crv });
   if (cert.fullChain.error)
-    log8.warn("ssl server", { code: cert?.fullChain?.error?.code, syscall: cert?.fullChain?.error?.syscall, path: cert?.fullChain?.error?.path });
+    log9.warn("SSL Server", { code: cert?.fullChain?.error?.code, syscall: cert?.fullChain?.error?.syscall, path: cert?.fullChain?.error?.path });
   else
-    log8.info("ssl server", { subject: cert.fullChain.subject, issuer: cert.fullChain.issuer, algorithm: cert.fullChain.algorithm, from: cert.fullChain.notBefore, until: cert.fullChain.notAfter, type: cert.serverKey.type, use: cert.serverKey.use });
+    log9.info("SSL Server", { subject: cert.fullChain.subject, issuer: cert.fullChain.issuer, algorithm: cert.fullChain.algorithm, from: cert.fullChain.notBefore, until: cert.fullChain.notAfter, type: cert.serverKey.type, use: cert.serverKey.use });
   await acme.getCert();
   await acme.monitorCert(restartServer);
   await init(cfg3.geoIP.city, cfg3.geoIP.asn);

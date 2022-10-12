@@ -15,12 +15,12 @@ export async function init(geoIPCityDB: string, geoIPASNDB: string): Promise<voi
     if (fs.existsSync(geoIPCityDB) && fs.existsSync(geoIPASNDB)) {
       geoCity = await maxmind.open(geoIPCityDB);
       geoASN = await maxmind.open(geoIPASNDB);
-      log.state('geoip', { city: geoIPCityDB, asn: geoIPASNDB });
+      log.state('GeoIP', { city: geoIPCityDB, asn: geoIPASNDB });
     } else {
-      log.warn('geoip missing', { city: geoIPCityDB, asn: geoIPASNDB });
+      log.warn('GeoIP missing', { city: geoIPCityDB, asn: geoIPASNDB });
     }
   } catch {
-    log.warn('geoip failed', { city: geoIPCityDB, asn: geoIPASNDB });
+    log.warn('GeoIP failed', { city: geoIPCityDB, asn: geoIPASNDB });
   }
 }
 

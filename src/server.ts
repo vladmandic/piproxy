@@ -26,8 +26,8 @@ let cfg = config.get();
 function errorHandler(err, req: Req, res: Res) {
   if (err) {
     const client = `${req.headers[':scheme'] || ((req.socket as TLSSocket).encrypted ? 'https' : 'http')}://${req.headers[':authority'] || req.headers.host}${req.url}`;
-    if (err.statusCode) log.error('proxy', { client, status: err.statusCode, code: err.code, address: err.address, port: err.port });
-    else log.error('proxy', { client, err });
+    if (err.statusCode) log.error('Proxy', { client, status: err.statusCode, code: err.code, address: err.address, port: err.port });
+    else log.error('Proxy', { client, err });
     res.setHeader('proxy-error', err);
     if (err.statusCode) res.writeHead(err.statusCode, req.headers);
     res.end();
@@ -170,9 +170,9 @@ export async function init(sslOptions) {
   app = await middleware.init(); // Initialize server middleware
   startServer(); // Start proxy web server
 
-  if (!cfg.redirects || (cfg.redirects.length <= 0)) log.warn('proxy', { rules: 0 });
-  for (const rule of cfg.redirects) log.info('proxy', rule); // Log all redirect rules
-  log.info('static', { paths: Object.keys(cfg.answers) }); // Log all predefined answers
+  if (!cfg.redirects || (cfg.redirects.length <= 0)) log.warn('Proxy', { rules: 0 });
+  for (const rule of cfg.redirects) log.info('Proxy', rule); // Log all redirect rules
+  log.info('Static', { paths: Object.keys(cfg.answers) }); // Log all predefined answers
 
   app.use((req: Req, res: Res, next) => answers.get(req, res, next)); // Enable predefined answers
   app.use((req: Req, res: Res) => proxy.web(req, res, findTarget, errorHandler)); // Actual proxy calls
