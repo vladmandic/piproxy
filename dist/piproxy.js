@@ -31,7 +31,7 @@ var __publicField = (obj, key, value) => {
 
 // src/index.ts
 var log9 = __toESM(require("@vladmandic/pilogger"));
-var acme = __toESM(require("@vladmandic/piacme/src/piacme"));
+var acme = __toESM(require("@vladmandic/piacme"));
 
 // src/noip.ts
 var superagent = __toESM(require("superagent"));
@@ -1082,18 +1082,25 @@ async function main() {
   log9.headerJson();
   await update(cfg3.noip);
   log9.info("SSL", cfg3.ssl);
-  await acme.init(cfg3.acme);
-  const cert = await acme.parseCert();
-  if (cert.account.error)
-    log9.warn("SSL Account", { code: cert?.account?.error?.code, syscall: cert?.account?.error?.syscall, path: cert?.account?.error?.path });
-  else
-    log9.info("SSL Account", { contact: cert.account.contact, status: cert.account.status, type: cert.accountKey.type, crv: cert.accountKey.crv });
-  if (cert.fullChain.error)
-    log9.warn("SSL Server", { code: cert?.fullChain?.error?.code, syscall: cert?.fullChain?.error?.syscall, path: cert?.fullChain?.error?.path });
-  else
-    log9.info("SSL Server", { subject: cert.fullChain.subject, issuer: cert.fullChain.issuer, algorithm: cert.fullChain.algorithm, from: cert.fullChain.notBefore, until: cert.fullChain.notAfter, type: cert.serverKey.type, use: cert.serverKey.use });
-  await acme.getCert();
-  await acme.monitorCert(restartServer);
+  if (cfg3?.acme?.domains?.length > 0) {
+    await acme.setConfig(cfg3.acme);
+    const reverseRouteOK = await acme.testConnection(cfg3.acme.domains[0]);
+    const cert = await acme.parseCert();
+    if (cert.account.error)
+      log9.warn("SSL Account", { code: cert?.account?.error?.code, syscall: cert?.account?.error?.syscall, path: cert?.account?.error?.path });
+    else
+      log9.info("SSL Account", { contact: cert.account.contact, status: cert.account.status, type: cert.accountKey.type, crv: cert.accountKey.crv });
+    if (cert.fullChain.error)
+      log9.warn("SSL Server", { code: cert?.fullChain?.error?.code, syscall: cert?.fullChain?.error?.syscall, path: cert?.fullChain?.error?.path });
+    else
+      log9.info("SSL Server", { subject: cert.fullChain.subject, issuer: cert.fullChain.issuer, algorithm: cert.fullChain.algorithm, from: cert.fullChain.notBefore, until: cert.fullChain.notAfter, type: cert.serverKey.type, use: cert.serverKey.use });
+    if (reverseRouteOK) {
+      await acme.getCert();
+      await acme.monitorCert(restartServer);
+    } else {
+      log9.warn("No reverse route to server, skipping certificate monitoring and auto-renewal");
+    }
+  }
   await init(cfg3.geoIP.city, cfg3.geoIP.asn);
   await init4(cfg3.ssl);
   await start();

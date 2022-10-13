@@ -1,5 +1,5 @@
 import * as log from '@vladmandic/pilogger';
-import * as acme from '@vladmandic/piacme/src/piacme';
+import * as acme from '@vladmandic/piacme';
 import * as noip from './noip';
 import * as geoip from './geoip';
 import * as monitor from './monitor';
@@ -38,14 +38,21 @@ async function main() {
 
   // check and auto-update certificates
   log.info('SSL', cfg.ssl);
-  await acme.init(cfg.acme);
-  const cert = await acme.parseCert();
-  if (cert.account.error) log.warn('SSL Account', { code: cert?.account?.error?.code, syscall: cert?.account?.error?.syscall, path: cert?.account?.error?.path });
-  else log.info('SSL Account', { contact: cert.account.contact, status: cert.account.status, type: cert.accountKey.type, crv: cert.accountKey.crv });
-  if (cert.fullChain.error) log.warn('SSL Server', { code: cert?.fullChain?.error?.code, syscall: cert?.fullChain?.error?.syscall, path: cert?.fullChain?.error?.path });
-  else log.info('SSL Server', { subject: cert.fullChain.subject, issuer: cert.fullChain.issuer, algorithm: cert.fullChain.algorithm, from: cert.fullChain.notBefore, until: cert.fullChain.notAfter, type: cert.serverKey.type, use: cert.serverKey.use });
-  await acme.getCert(); // validate & auto-renew
-  await acme.monitorCert(server.restartServer); // start ssl certificate monitoring for expiration
+  if (cfg?.acme?.domains?.length > 0) {
+    await acme.setConfig(cfg.acme);
+    const reverseRouteOK = await acme.testConnection(cfg.acme.domains[0]);
+    const cert = await acme.parseCert();
+    if (cert.account.error) log.warn('SSL Account', { code: cert?.account?.error?.code, syscall: cert?.account?.error?.syscall, path: cert?.account?.error?.path });
+    else log.info('SSL Account', { contact: cert.account.contact, status: cert.account.status, type: cert.accountKey.type, crv: cert.accountKey.crv });
+    if (cert.fullChain.error) log.warn('SSL Server', { code: cert?.fullChain?.error?.code, syscall: cert?.fullChain?.error?.syscall, path: cert?.fullChain?.error?.path });
+    else log.info('SSL Server', { subject: cert.fullChain.subject, issuer: cert.fullChain.issuer, algorithm: cert.fullChain.algorithm, from: cert.fullChain.notBefore, until: cert.fullChain.notAfter, type: cert.serverKey.type, use: cert.serverKey.use });
+    if (reverseRouteOK) {
+      await acme.getCert(); // validate & auto-renew
+      await acme.monitorCert(server.restartServer); // start ssl certificate monitoring for expiration
+    } else {
+      log.warn('No reverse route to server, skipping certificate monitoring and auto-renewal');
+    }
+  }
 
   // load geoip database
   await geoip.init(cfg.geoIP.city, cfg.geoIP.asn);
