@@ -1,6 +1,6 @@
 {
   "name": "@vladmandic/piproxy",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "Reverse HTTP/HTTPS/HTTP2 Proxy in NodeJS with SSL Certificate Management, Compression, Security Enforcement and Rate Limiting",
   "main": "dist/piproxy.js",
   "sideEffects": false,
@@ -35,7 +35,7 @@
     "node": "^14.0.0"
   },
   "dependencies": {
-    "@vladmandic/piacme": "link:../piacme",
+    "@vladmandic/piacme": "^1.0.3",
     "connect": "^3.7.0",
     "helmet": "^6.0.0",
     "maxmind": "^4.3.8",
@@ -43,7 +43,7 @@
     "superagent": "^8.0.2"
   },
   "devDependencies": {
-    "@types/node": "^18.8.4",
+    "@types/node": "^18.8.5",
     "@typescript-eslint/eslint-plugin": "^5.40.0",
     "@typescript-eslint/parser": "^5.40.0",
     "@vladmandic/build": "^0.7.14",
@@ -55,7 +55,7 @@
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-json": "^3.1.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^6.0.1",
+    "eslint-plugin-promise": "^6.1.0",
     "tslib": "^2.4.0",
     "typescript": "4.8.4"
   }
